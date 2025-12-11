@@ -22,11 +22,11 @@ export default function ImageUpload({
 
   return (
     <div>
-      <label className="block text-white font-semibold mb-2">
+      <label className="block text-nga-cream font-semibold mb-2">
         Artwork Image *
       </label>
 
-      <div className="border-2 border-dashed border-[#a8cf45]/30 rounded-lg p-8 text-center hover:border-[#a8cf45] transition-colors">
+      <div className="border-2 border-dashed border-nga-green rounded-lg p-8 text-center hover:border-nga-green transition-colors">
         {previewUrl ? (
           <div className="space-y-4">
             <img
@@ -37,16 +37,16 @@ export default function ImageUpload({
             <button
               type="button"
               onClick={clearImage}
-              className="text-[#a8cf45] hover:text-[#d1e28c] underline font-semibold"
+              className="text-nga-green hover:text-nga-light-green underline font-semibold"
             >
               Change Image
             </button>
           </div>
         ) : (
           <label className="cursor-pointer block">
-            <ImageIcon className="w-16 h-16 text-[#a8cf45]/50 mx-auto mb-4" />
+            <ImageIcon className="w-16 h-16 text-nga-green mx-auto mb-4" />
             <p className="text-white mb-2 font-semibold">Click to upload artwork image</p>
-            <p className="text-[#f9faf8]/60 text-sm">
+            <p className="text-nga-cream text-sm">
               PNG, JPG up to 50MB (optimized automatically)
             </p>
             <input

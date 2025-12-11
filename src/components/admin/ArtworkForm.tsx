@@ -21,7 +21,7 @@ export default function ArtworkForm({ formData, setFormData, isUploading, imageF
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           required
           disabled={isUploading}
-          className="w-full px-4 py-3 rounded-lg bg-[#1a4d2e] text-white border border-[#a8cf45]/30"
+          className="w-full px-4 py-3 rounded-lg bg-nga-navy text-white border border-nga-green"
         />
       </div>
 
@@ -34,7 +34,7 @@ export default function ArtworkForm({ formData, setFormData, isUploading, imageF
           onChange={(e) => setFormData({ ...formData, artist: e.target.value })}
           required
           disabled={isUploading}
-          className="w-full px-4 py-3 rounded-lg bg-[#1a4d2e] text-white border border-[#a8cf45]/30"
+          className="w-full px-4 py-3 rounded-lg bg-nga-navy text-white border border-bg-nga-green"
         />
       </div>
 
@@ -50,7 +50,7 @@ export default function ArtworkForm({ formData, setFormData, isUploading, imageF
             onChange={(e) => setFormData({ ...formData, year: e.target.value })}
             required
             disabled={isUploading}
-            className="w-full px-4 py-3 rounded-lg bg-[#1a4d2e] text-white border border-[#a8cf45]/30"
+            className="w-full px-4 py-3 rounded-lg bg-nga-navy text-white border border-nga-green"
           />
         </div>
 
@@ -62,7 +62,7 @@ export default function ArtworkForm({ formData, setFormData, isUploading, imageF
             onChange={(e) => setFormData({ ...formData, medium: e.target.value })}
             required
             disabled={isUploading}
-            className="w-full px-4 py-3 rounded-lg bg-[#1a4d2e] text-white border border-[#a8cf45]/30"
+            className="w-full px-4 py-3 rounded-lg bg-nga-navy text-white border border-nga-green"
           />
         </div>
       </div>
@@ -75,7 +75,7 @@ export default function ArtworkForm({ formData, setFormData, isUploading, imageF
           value={formData.dimensions}
           onChange={(e) => setFormData({ ...formData, dimensions: e.target.value })}
           disabled={isUploading}
-          className="w-full px-4 py-3 rounded-lg bg-[#1a4d2e] text-white border border-[#a8cf45]/30"
+          className="w-full px-4 py-3 rounded-lg bg-nga-navy text-white border border-nga-green"
         />
       </div>
 
@@ -86,7 +86,7 @@ export default function ArtworkForm({ formData, setFormData, isUploading, imageF
           value={formData.category}
           onChange={(e) => setFormData({ ...formData, category: e.target.value })}
           disabled={isUploading}
-          className="w-full px-4 py-3 rounded-lg bg-[#1a4d2e] text-white border border-[#a8cf45]/30"
+          className="w-full px-4 py-3 rounded-lg bg-nga-navy text-white border border-nga-green"
         >
           <option value="painting">Painting</option>
           <option value="sculpture">Sculpture</option>
@@ -107,7 +107,7 @@ export default function ArtworkForm({ formData, setFormData, isUploading, imageF
           disabled={isUploading}
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          className="w-full px-4 py-3 rounded-lg bg-[#1a4d2e] text-white border border-[#a8cf45]/30 resize-none"
+          className="w-full px-4 py-3 rounded-lg bg-nga-navy text-white border border-nga-green resize-none"
         />
       </div>
 

@@ -1,4 +1,3 @@
-// src/components/3d/GalleryFloor.tsx
 import { useRef } from 'react';
 import * as THREE from 'three';
 

@@ -2,10 +2,9 @@
 
 import { motion } from 'framer-motion';
 
-/**
- * CollectionsHeader Component
- * 
- * Displays the main header for collections page
+/*
+ CollectionsHeader Component
+ Displays the main header for collections page
  */
 export default function CollectionsHeader() {
   return (

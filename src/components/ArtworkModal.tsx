@@ -20,11 +20,10 @@ interface ArtworkModalProps {
   onClose: () => void;
 }
 
-/**
- * ArtworkModal Component
- * 
- * Full-screen modal displaying artwork details
- * Shows large protected image + complete metadata
+/*
+ ArtworkModal Component
+ Full-screen modal displaying artwork details
+ Shows large protected image + complete metadata
  */
 export default function ArtworkModal({ artwork, onClose }: ArtworkModalProps) {
   // Close on Escape key
@@ -72,7 +71,7 @@ export default function ArtworkModal({ artwork, onClose }: ArtworkModalProps) {
             onClick={onClose}
             className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-nga-navy hover:bg-nga-light-green transition-colors flex items-center justify-center"
           >
-            <X className="w-6 h-6 text-white" />
+            <X className="w-6 h-6 text-nga-cream" />
           </button>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
@@ -92,7 +91,7 @@ export default function ArtworkModal({ artwork, onClose }: ArtworkModalProps) {
             {/* Right: Details */}
             <div className="space-y-6">
               <div>
-                <h2 className="text-4xl font-bold text-white mb-2">
+                <h2 className="text-4xl font-bold text-nga-cream mb-2">
                   {artwork.title}
                 </h2>
                 <p className="text-nga-navy text-2xl font-semibold">

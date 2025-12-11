@@ -8,18 +8,16 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-/**
- * GET /api/artworks
- * 
- * Returns all artworks (for collections page and 3D gallery)
- * Supports filtering and pagination
- * 
- * Query params:
- * - category: filter by category (painting, sculpture, etc.)
- * - limit: number of results (default: 50)
- * - offset: pagination offset (default: 0)
- * 
- * Example: /api/artworks?category=painting&limit=20
+/*
+ GET /api/artworks
+ 
+ Returns all artworks (for collections page and 3D gallery)
+ Supports filtering and pagination
+ Query params:
+ - category: filter by category (painting, sculpture, etc.)
+ - limit: number of results (default: 50)
+ - offset: pagination offset (default: 0)
+ Example: /api/artworks?category=painting&limit=20
  */
 export async function GET(request: NextRequest) {
   try {

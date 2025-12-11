@@ -4,7 +4,7 @@ import { CheckCircle } from "lucide-react";
 
 export default function SuccessMessage({ uploadStats }: any) {
   return (
-    <div className="bg-[#a8cf45] text-[#1a1a1a] p-6 rounded-lg mb-6 flex items-start gap-4">
+    <div className="bg-nga-green text-[#1a1a1a] p-6 rounded-lg mb-6 flex items-start gap-4">
       <CheckCircle className="w-6 h-6 shrink-0 mt-1" />
 
       <div>

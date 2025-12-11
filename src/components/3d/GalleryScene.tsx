@@ -1,4 +1,3 @@
-// src/components/3d/GalleryScene.tsx
 'use client';
 
 import { Canvas } from '@react-three/fiber';

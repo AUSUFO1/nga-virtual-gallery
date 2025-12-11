@@ -53,7 +53,7 @@ export default function LobbyCanvas() {
       </Canvas>
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-linear-to-b from-[#20a25b]/70 via-transparent to-[#1a4d2e]/80 pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-b from-nga-navy/70 via-transparent to-[#1a4d2e]/80 pointer-events-none" />
     </>
   );
 }

@@ -13,14 +13,13 @@ interface ProtectedImageProps {
   showWatermark?: boolean;
 }
 
-/**
- * ProtectedImage Component
- * 
- * Displays artwork images with security features:
- * - Fetches signed URL from API (expires in 1 hour)
- * - Disables right-click and drag
- * - Shows watermark overlay
- * - Prevents image theft
+/*
+ ProtectedImage Component
+ Displays artwork images with security features:
+ - Fetches signed URL from API (expires in 1 hour)
+ - Disables right-click and drag
+ - Shows watermark overlay
+ - Prevents image theft
  */
 export default function ProtectedImage({
   artworkId,
@@ -80,7 +79,7 @@ export default function ProtectedImage({
   if (isLoading) {
     return (
       <div 
-        className={`relative bg-[#1a4d2e] animate-pulse flex items-center justify-center ${className}`}
+        className={`relative bg-nga-navy animate-pulse flex items-center justify-center ${className}`}
         style={{ width, height }}
       >
         <div className="text-[#a8cf45] text-sm">Loading artwork...</div>
@@ -92,7 +91,7 @@ export default function ProtectedImage({
   if (error || !imageUrl) {
     return (
       <div 
-        className={`relative bg-[#1a4d2e] flex items-center justify-center ${className}`}
+        className={`relative bg-nga-navy flex items-center justify-center ${className}`}
         style={{ width, height }}
       >
         <div className="text-red-400 text-sm">Failed to load artwork</div>

@@ -18,10 +18,9 @@ export interface Artwork {
   imageId: string;
 }
 
-/**
- * Collections Page
- *
- * Main page for browsing all artworks with category filtering
+/*
+ Collections Page
+ Main page for browsing all artworks with category filtering
  */
 export default function CollectionsPage() {
   const [allArtworks, setAllArtworks] = useState<Artwork[]>([]);

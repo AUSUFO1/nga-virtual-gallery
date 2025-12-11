@@ -9,14 +9,12 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-/**
- * GET /api/artworks/featured
- * 
- * Returns all featured artworks for homepage display
- * Includes metadata but NOT image URLs (those are fetched separately for security)
- * 
- * Example response:
- * [
+/*
+ GET /api/artworks/featured
+ Returns all featured artworks for homepage display
+ Includes metadata but NOT image URLs (those are fetched separately for security)
+  Example response:
+ [
  *   {
  *     "id": "artwork-001",
  *     "title": "Tutu",
@@ -73,9 +71,9 @@ export async function GET(request: NextRequest) {
   }
 }
 
-/**
- * Optional: GET with filters
- * /api/artworks/featured?limit=6
+/*
+ Optional: GET with filters
+ api/artworks/featured?limit=6
  */
 export async function GET_WITH_PARAMS(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

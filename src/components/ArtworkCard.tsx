@@ -21,11 +21,10 @@ interface ArtworkCardProps {
   onView?: () => void;
 }
 
-/**
- * ArtworkCard Component
- * 
- * Displays individual artwork in grid format
- * Features: smooth hover effects, protected images, metadata display
+/*
+ ArtworkCard Component
+ Displays individual artwork in grid format
+ Features: smooth hover effects, protected images, metadata display
  */
 export default function ArtworkCard({ artwork, index = 0, onView }: ArtworkCardProps) {
   return (
