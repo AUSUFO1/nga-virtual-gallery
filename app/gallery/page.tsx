@@ -1,104 +1,71 @@
-// src/app/gallery/page.tsx
 'use client';
 
-import { useState } from 'react';
-import dynamic from 'next/dynamic';
-import { demoArtworks } from '@/src/data/artworks';
-import { Artwork } from '@/src/types/artwork';
+import { useState, useEffect } from 'react';
+import Lobby3DBackground from '@/src/components/gallery/Lobby3DBackground';
+import RoomSelection from '@/src/components/gallery/RoomSelection';
+import LobbyHeader from '@/src/components/gallery/LobbyHeader';
+import LobbyFooter from '@/src/components/gallery/LobbyFooter';
+import PaintingIcon from '@/public/icon/PaintingIcon';
+import SculptureIcon from '@/public/icon/SculptureIcon';
+import PhotographyIcon from '@/public/icon/PhotographyIcon';
+import TextileIcon from '@/public/icon/TextileIcon';
+import MixedMediaIcon from '@/public/icon/MixedMediaIcon';
+import ContemporaryIcon from '@/public/icon/ContemporaryIcon';
+import TraditionalIcon from '@/public/icon/TraditionalIcon';
 
-// Dynamic import with proper typing
-const GalleryScene = dynamic(
-  () => import('@/src/components/3d/GalleryScene').then((mod) => mod.default),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-full h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-lg text-gray-700">Loading Virtual Gallery...</p>
-        </div>
-      </div>
-    ),
-  }
-) as React.ComponentType<{
-  artworks: Artwork[];
-  onArtworkClick: (artwork: Artwork) => void;
-}>;
+export const GALLERY_ROOMS = [
+  { id: 'painting', label: 'Painting Room', Icon: PaintingIcon, category: 'painting' },
+  { id: 'sculpture', label: 'Sculpture Room', Icon: SculptureIcon, category: 'sculpture' },
+  { id: 'photography', label: 'Photography Room', Icon: PhotographyIcon, category: 'photography' },
+  { id: 'textile', label: 'Textile Room', Icon: TextileIcon, category: 'textile' },
+  { id: 'mixed-media', label: 'Mixed Media Room', Icon: MixedMediaIcon, category: 'mixed-media' },
+  { id: 'contemporary', label: 'Contemporary Room', Icon: ContemporaryIcon, category: 'contemporary' },
+  { id: 'traditional', label: 'Traditional Room', Icon: TraditionalIcon, category: 'traditional' },
+];
 
-export default function GalleryPage() {
-  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
 
-  const handleArtworkClick = (artwork: Artwork) => {
-    setSelectedArtwork(artwork);
-  };
+export default function GalleryLobby() {
+  const [roomCounts, setRoomCounts] = useState<Record<string, number>>({});
+  const [isLoading, setIsLoading] = useState(true);
 
-  const closeModal = () => {
-    setSelectedArtwork(null);
-  };
+  useEffect(() => {
+    async function fetchCounts() {
+      try {
+        const response = await fetch('/api/artworks?limit=1000');
+        const data = await response.json();
+        const artworks = data.artworks || [];
+
+        const counts: Record<string, number> = {};
+        GALLERY_ROOMS.forEach(room => {
+          counts[room.category] = artworks.filter(
+            (art: any) => art.category === room.category
+          ).length;
+        });
+
+        setRoomCounts(counts);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching artwork counts:', error);
+        setIsLoading(false);
+      }
+    }
+
+    fetchCounts();
+  }, []);
 
   return (
-    <div className="relative">
-      {/* 3D Gallery Scene */}
-      <GalleryScene 
-        artworks={demoArtworks} 
-        onArtworkClick={handleArtworkClick}
-      />
+    <div className="relative min-h-screen overflow-hidden">
+      <Lobby3DBackground />
 
-      {/* Controls Overlay */}
-      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg max-w-xs">
-        <h3 className="font-bold text-lg mb-2">🎮 Controls</h3>
-        <ul className="text-sm space-y-1">
-          <li>🖱️ <strong>Left Click + Drag:</strong> Look around</li>
-          <li>🖱️ <strong>Right Click + Drag:</strong> Move</li>
-          <li>🔍 <strong>Scroll:</strong> Zoom in/out</li>
-          <li>🖼️ <strong>Click Artwork:</strong> View details</li>
-        </ul>
+      <div className="relative z-10 min-h-screen flex flex-col">
+        <LobbyHeader />
+        <RoomSelection
+          galleryRooms={GALLERY_ROOMS}
+          roomCounts={roomCounts}
+          isLoading={isLoading}
+        />
+        <LobbyFooter />
       </div>
-
-      {/* Title Overlay */}
-      <div className="absolute top-4 right-4 bg-black/80 backdrop-blur-sm p-4 rounded-lg shadow-lg">
-        <h1 className="text-white text-2xl font-bold">National Gallery of Art</h1>
-        <p className="text-white/80 text-sm">Virtual 3D Exhibition</p>
-      </div>
-
-      {/* Artwork Detail Modal */}
-      {selectedArtwork && (
-        <div 
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
-          onClick={closeModal}
-        >
-          <div 
-            className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <h2 className="text-3xl font-bold">{selectedArtwork.title}</h2>
-                <button 
-                  onClick={closeModal}
-                  className="text-gray-500 hover:text-gray-700 text-2xl font-bold px-3 hover:bg-gray-100 rounded"
-                >
-                  ×
-                </button>
-              </div>
-              
-              <img 
-                src={selectedArtwork.imageUrl} 
-                alt={selectedArtwork.title}
-                className="w-full h-96 object-contain mb-6 bg-gray-100 rounded"
-              />
-              
-              <div className="space-y-3">
-                <p><strong>Artist:</strong> {selectedArtwork.artist}</p>
-                <p><strong>Year:</strong> {selectedArtwork.year}</p>
-                <p><strong>Medium:</strong> {selectedArtwork.medium}</p>
-                <p><strong>Dimensions:</strong> {selectedArtwork.dimensions}</p>
-                <p className="text-gray-700 leading-relaxed mt-4">{selectedArtwork.description}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
