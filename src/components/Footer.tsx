@@ -37,11 +37,11 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4 text-nga-cream">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               {[
-                { label: "Virtual Gallery", href: "#gallery" },
-                { label: "Collections", href: "#collections" },
-                { label: "Exhibitions", href: "#exhibitions" },
-                { label: "About Us", href: "#about" },
-                { label: "Contact", href: "#contact" },
+                { label: "Virtual Gallery", href: "/gallery" },
+                { label: "Collections", href: "/collections" },
+                { label: "Exhibitions", href: "https://nga.gov.ng/events/" },
+                { label: "About Us", href: "https://nga.gov.ng/who-we-are/" },
+                { label: "Contact", href: "https://nga.gov.ng/contact/" },
               ].map((item, i) => (
                 <li key={i}>
                   <a
@@ -68,19 +68,18 @@ export default function Footer() {
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-nga-green mt-1 shrink-0" />
                 <span className="text-nga-cream/70">
-                  Plot 24, Shehu Shagari Way <br />
-                  Maitama, Abuja, FCT
+                  Federal Secretariat Complex, Phase II, Shehu Shagari Way, Abuja, FCT.
                 </span>
               </li>
 
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-nga-green shrink-0" />
-                <span className="text-nga-cream/70">+234 (0) 9 461 4820</span>
+                <span className="text-nga-cream/70">+234 (80) 231 701 78</span>
               </li>
 
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-nga-green shrink-0" />
-                <span className="text-nga-cream/70">info@nationalgallery.gov.ng</span>
+                <span className="text-nga-cream/70">info@nga.gov.ng</span>
               </li>
             </ul>
           </motion.div>
@@ -100,8 +99,8 @@ export default function Footer() {
               </li>
 
               <li className="flex justify-between">
-                <span>Saturday:</span>
-                <span className="font-semibold text-nga-cream">10:00 AM - 4:00 PM</span>
+                <span>Saturday - Sunday:</span>
+                <span className="font-semibold text-nga-cream">Closed</span>
               </li>
 
               <li className="mt-4 pt-4 border-t border-nga-cream/20">
@@ -118,9 +117,8 @@ export default function Footer() {
             <p>© {currentYear} National Gallery of Art, Nigeria. All rights reserved.</p>
 
             <div className="flex gap-6">
-              <a href="#" className="hover:text-nga-green transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-nga-green transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-nga-green transition-colors">Accessibility</a>
+              <a href="/privacy" className="hover:text-nga-green transition-colors">Privacy Policy</a>
+              <a href="/accessibility" className="hover:text-nga-green transition-colors">Accessibility</a>
             </div>
           </div>
 

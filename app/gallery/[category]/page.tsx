@@ -63,7 +63,7 @@ export default function GalleryRoomPage() {
     );
   }
 
-  // ✅ From here down, TypeScript KNOWS category is a string
+  // From here down, TypeScript KNOWS category is a string
   return (
     <GalleryRoom3D
       category={category}

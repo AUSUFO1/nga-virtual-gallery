@@ -63,7 +63,7 @@ export default function FeaturedCollection() {
             Featured <span className="text-nga-green">Collection</span>
           </h2>
 
-          <p className="text-nga-navy/70 text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-nga-navy/70 text-lg md:text-2xl font-bold max-w-2xl mx-auto leading-relaxed">
             Explore an exclusive selection of artworks representing
             Nigeria's cultural identity, innovations, and artistic legacy.
           </p>

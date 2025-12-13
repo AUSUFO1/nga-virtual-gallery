@@ -96,7 +96,7 @@ export default function ArtworkFrame3D({
   );
 }
 
-/* ================= IMAGE ================= */
+/* IMAGE */
 
 function ArtworkImage({
   meshRef,
@@ -136,7 +136,7 @@ function ArtworkImage({
   );
 }
 
-/* ================= PLACEHOLDER ================= */
+/* PLACEHOLDER */
 
 function PlaceholderImage({
   meshRef,

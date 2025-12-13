@@ -10,7 +10,7 @@ const r2 = new S3Client({
   },
 });
 
-/**
+/*
  * GET /api/artwork/image?id=artwork-001
  * 
  * Proxies image from Cloudflare R2 to avoid CORS issues

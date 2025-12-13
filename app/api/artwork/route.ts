@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('❌ Error generating signed URL:', error);
+    console.error(' Error generating signed URL:', error);
     
     // Handle specific errors
     if (error.name === 'NoSuchKey') {

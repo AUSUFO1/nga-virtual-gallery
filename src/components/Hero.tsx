@@ -52,7 +52,17 @@ export default function Hero() {
   if (!mounted) return null;
 
   return (
-    <section className="relative min-h-[55vh] sm:min-h-screen flex flex-col items-center justify-center pt-20 sm:pt-0 overflow-hidden bg-nga-navy text-nga-cream">
+<section className="
+  relative
+  min-h-[55vh]
+  sm:min-h-[80vh]
+  md:min-h-[40vh]
+  lg:min-h-screen
+  flex flex-col items-center justify-center
+  pt-20 sm:pt-0
+  overflow-hidden
+  bg-nga-navy text-nga-cream
+">
 
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -78,7 +88,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-x5l font-extrabold font-poppins leading-tight drop-shadow-[0_4px_26px_rgba(0,0,0,0.7)]"
+            className="text-lg sm:text-3xl md:text-4xl lg:text-x5l font-extrabold font-poppins leading-tight drop-shadow-[0_4px_26px_rgba(0,0,0,0.7)]"
           >
             {headlines[currentHeadline].parts.map((part, i) => (
               <span key={i} className={part.className}>{part.text} </span>
@@ -91,7 +101,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="text-sm sm:text-base md:text-lg lg:text-xl text-nga-cream/90 max-w-2xl mx-auto mt-6 mb-10 px-4 leading-relaxed font-poppins drop-shadow-[0_4px_15px_rgba(0,0,0,0.9)]"
+          className="text-sm sm:text-base md:text-2xl lg:text-xl text-nga-cream/90 max-w-2xl mx-auto mt-6 mb-10 px-4 leading-relaxed font-poppins drop-shadow-[0_4px_15px_rgba(0,0,0,0.9)]"
         >
           Experience Nigeria's artistic heritage through our immersive virtual gallery — 
           explore curated artworks, discover emerging creators, and connect with 

@@ -38,7 +38,7 @@ export default function GalleryUI({
   return (
     <>
       {/* Top Bar */}
-      <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/50 to-transparent">
+      <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-linear-to-b from-black/50 to-transparent">
         <div className="container-custom flex items-center justify-between">
           
           {/* Room Title */}
@@ -102,7 +102,7 @@ export default function GalleryUI({
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 50 }}
               className="
-                bg-gradient-to-br from-[#1a4d2e] to-[#143d26]
+                bg-linear-to-br from-[#1a4d2e] to-[#143d26]
                 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto
                 border-2 border-[#a8cf45]/30
               "
@@ -149,7 +149,7 @@ export default function GalleryUI({
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full aspect-[3/4] bg-[#20a25b]/20 rounded-lg flex items-center justify-center">
+                    <div className="w-full aspect-3/4 bg-[#20a25b]/20 rounded-lg flex items-center justify-center">
                       <ZoomIn className="w-16 h-16 text-[#a8cf45]/50" />
                     </div>
                   )}
