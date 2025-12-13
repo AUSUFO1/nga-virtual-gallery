@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Playfair_Display } from 'next/font/google';
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['700', '900'],
+  variable: '--font-playfair',
+  display: 'swap',
+});
 
 export default function Hero() {
   const [mounted, setMounted] = useState(false);
@@ -52,23 +60,21 @@ export default function Hero() {
   if (!mounted) return null;
 
   return (
-<section className="
-  relative
-  min-h-[55vh]
-  sm:min-h-[80vh]
-  md:min-h-[40vh]
-  lg:min-h-screen
-  flex flex-col items-center justify-center
-  pt-20 sm:pt-0
-  overflow-hidden
-  bg-nga-navy text-nga-cream
-">
-
+    <section className="
+      relative
+      min-h-[55vh]
+      sm:min-h-[80vh]
+      md:min-h-[40vh]
+      lg:min-h-screen
+      flex flex-col items-center justify-center
+      pt-20 sm:pt-0
+      overflow-hidden
+      bg-nga-navy text-nga-cream
+    ">
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/images/bg-hero.jpeg')" }}
       >
-        {/* DARK OVERLAY TO REDUCE DISTRACTION */}
         <div className="absolute inset-0 bg-black/75" />
       </div>
 
@@ -79,7 +85,6 @@ export default function Hero() {
         transition={{ duration: 0.7 }}
         className="relative z-10 text-center px-4 max-w-4xl mx-auto"
       >
-
         {/* HEADLINES */}
         <AnimatePresence mode="wait">
           <motion.h1
@@ -88,7 +93,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="text-lg sm:text-3xl md:text-4xl lg:text-x5l font-extrabold font-poppins leading-tight drop-shadow-[0_4px_26px_rgba(0,0,0,0.7)]"
+            className={`${playfair.variable} text-lg sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight drop-shadow-[0_4px_26px_rgba(0,0,0,0.7)]`}
           >
             {headlines[currentHeadline].parts.map((part, i) => (
               <span key={i} className={part.className}>{part.text} </span>
@@ -108,7 +113,7 @@ export default function Hero() {
           centuries of cultural excellence.
         </motion.p>
 
-        {/* ENTER VIRTUAL GALLERY BUTTON (LINK TO /gallery) */}
+        {/* ENTER VIRTUAL GALLERY BUTTON */}
         <motion.div
           whileHover={{ scale: 1.07 }}
           whileTap={{ scale: 0.94 }}
@@ -127,7 +132,6 @@ export default function Hero() {
             <ArrowRight className="w-5 h-5 text-nga-navy" />
           </Link>
         </motion.div>
-
       </motion.div>
     </section>
   );
