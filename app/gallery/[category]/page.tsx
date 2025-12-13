@@ -44,7 +44,7 @@ export default function GalleryRoomPage() {
   // Invalid or missing category
   if (!category) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#20a25b] to-[#1a4d2e] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-linear-to-b from-[#20a25b] to-[#1a4d2e] flex items-center justify-center px-4">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-white mb-4">
             Invalid Gallery Room

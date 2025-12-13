@@ -1,7 +1,9 @@
+'use client';
+
 import { useRef, useState } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
-import { Text } from '@react-three/drei';
-import { Mesh, TextureLoader } from 'three';
+import { useFrame } from '@react-three/fiber';
+import { Text, useTexture } from '@react-three/drei';
+import { Mesh } from 'three';
 
 interface Artwork {
   id: string;
@@ -19,11 +21,6 @@ interface ArtworkFrame3DProps {
   device: string;
 }
 
-/**
- * Individual 3D Artwork Frame
- * 
- * Displays artwork with frame and label
- */
 export default function ArtworkFrame3D({
   artwork,
   imageUrl,
@@ -32,81 +29,58 @@ export default function ArtworkFrame3D({
   onClick,
   device,
 }: ArtworkFrame3DProps) {
-  const meshRef = useRef<Mesh>(null);
+  const meshRef = useRef<Mesh | null>(null);
   const [hovered, setHovered] = useState(false);
 
-  // Load texture if URL available
-  const texture = imageUrl ? useLoader(TextureLoader, imageUrl) : null;
-
-  // Hover animation
   useFrame(() => {
-    if (meshRef.current && hovered) {
-      meshRef.current.scale.lerp({ x: 1.05, y: 1.05, z: 1.05 } as any, 0.1);
-    } else if (meshRef.current) {
-      meshRef.current.scale.lerp({ x: 1, y: 1, z: 1 } as any, 0.1);
-    }
+    if (!meshRef.current) return;
+
+    const targetScale = hovered ? 1.05 : 1;
+    meshRef.current.scale.lerp(
+      { x: targetScale, y: targetScale, z: targetScale } as any,
+      0.1
+    );
   });
 
-  const frameSize = device === 'mobile' ? [1, 1.3] : [1.5, 2];
+  const frameSize: [number, number] =
+    device === 'mobile' ? [1, 1.3] : [1.5, 2];
 
   return (
     <group position={position} rotation={rotation}>
-      
-      {/* Frame Border */}
+      {/* Frame border */}
       <mesh position={[0, 0, -0.02]}>
         <planeGeometry args={[frameSize[0] + 0.2, frameSize[1] + 0.2]} />
-        <meshStandardMaterial 
-          color={hovered ? "#a8cf45" : "#8B4513"}
+        <meshStandardMaterial
+          color={hovered ? '#a8cf45' : '#8B4513'}
           metalness={0.5}
           roughness={0.3}
         />
       </mesh>
 
-      {/* Artwork Image */}
-      <mesh
-        ref={meshRef}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClick();
-        }}
-        onPointerOver={(e) => {
-          e.stopPropagation();
-          setHovered(true);
-          document.body.style.cursor = 'pointer';
-        }}
-        onPointerOut={() => {
-          setHovered(false);
-          document.body.style.cursor = 'default';
-        }}
-      >
-        <planeGeometry args={frameSize as [number, number]} />
-        {texture ? (
-          <meshStandardMaterial 
-            map={texture} 
-            toneMapped={false}
-          />
-        ) : (
-          <meshStandardMaterial color="#1a4d2e" />
-        )}
-      </mesh>
-
-      {/* Spotlight on artwork */}
-      {device !== 'mobile' && (
-        <spotLight
-          position={[0, 1, 1]}
-          angle={0.3}
-          penumbra={0.5}
-          intensity={hovered ? 1.5 : 0.8}
-          castShadow={device === 'desktop'}
+      {/* Image or placeholder */}
+      {imageUrl ? (
+        <ArtworkImage
+          meshRef={meshRef}
+          imageUrl={imageUrl}
+          frameSize={frameSize}
+          onClick={onClick}
+          onHoverChange={setHovered}
+        />
+      ) : (
+        <PlaceholderImage
+          meshRef={meshRef}
+          frameSize={frameSize}
+          onClick={onClick}
+          onHoverChange={setHovered}
         />
       )}
 
-      {/* Artwork Label */}
+      {/* Label */}
       {device !== 'mobile' && (
         <Text
           position={[0, -(frameSize[1] / 2 + 0.3), 0.01]}
           fontSize={0.12}
-          color={hovered ? "#a8cf45" : "#1a1a1a"}
+          color={hovered ? '#a8cf45' : '#1a1a1a'}
           anchorX="center"
           anchorY="middle"
           maxWidth={frameSize[0]}
@@ -118,21 +92,82 @@ export default function ArtworkFrame3D({
           </Text>
         </Text>
       )}
-
-      {/* Watermark overlay */}
-      {texture && (
-        <Text
-          position={[0, 0, 0.01]}
-          fontSize={0.2}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-          rotation={[0, 0, -Math.PI / 6]}
-        >
-          © NGA
-        </Text>
-      )}
-
     </group>
+  );
+}
+
+/* ================= IMAGE ================= */
+
+function ArtworkImage({
+  meshRef,
+  imageUrl,
+  frameSize,
+  onClick,
+  onHoverChange,
+}: {
+  meshRef: React.RefObject<Mesh | null>;
+  imageUrl: string;
+  frameSize: [number, number];
+  onClick: () => void;
+  onHoverChange: (hover: boolean) => void;
+}) {
+  const texture = useTexture(imageUrl);
+
+  return (
+    <mesh
+      ref={meshRef}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        onHoverChange(true);
+        document.body.style.cursor = 'pointer';
+      }}
+      onPointerOut={() => {
+        onHoverChange(false);
+        document.body.style.cursor = 'default';
+      }}
+    >
+      <planeGeometry args={frameSize} />
+      <meshStandardMaterial map={texture} toneMapped={false} />
+    </mesh>
+  );
+}
+
+/* ================= PLACEHOLDER ================= */
+
+function PlaceholderImage({
+  meshRef,
+  frameSize,
+  onClick,
+  onHoverChange,
+}: {
+  meshRef: React.RefObject<Mesh | null>;
+  frameSize: [number, number];
+  onClick: () => void;
+  onHoverChange: (hover: boolean) => void;
+}) {
+  return (
+    <mesh
+      ref={meshRef}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      onPointerOver={(e) => {
+        e.stopPropagation();
+        onHoverChange(true);
+        document.body.style.cursor = 'pointer';
+      }}
+      onPointerOut={() => {
+        onHoverChange(false);
+        document.body.style.cursor = 'default';
+      }}
+    >
+      <planeGeometry args={frameSize} />
+      <meshStandardMaterial color="#2a2a2a" />
+    </mesh>
   );
 }

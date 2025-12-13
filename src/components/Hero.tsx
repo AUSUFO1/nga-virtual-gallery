@@ -56,7 +56,7 @@ export default function Hero() {
 
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/images/bg-hero.jpg')" }}
+        style={{ backgroundImage: "url('/images/bg-hero.jpeg')" }}
       >
         {/* DARK OVERLAY TO REDUCE DISTRACTION */}
         <div className="absolute inset-0 bg-black/75" />

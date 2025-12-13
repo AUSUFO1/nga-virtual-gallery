@@ -51,14 +51,17 @@ export async function GET(request: NextRequest) {
       expiresIn: 3600 
     });
 
-    // Return signed URL
+    // Return signed URL with CORS headers
     return Response.json({ 
       url: signedUrl,
       expiresIn: 3600,
       artworkId 
     }, {
       headers: {
-        'Cache-Control': 'private, max-age=3000', // Cache for 50 minutes
+        'Cache-Control': 'private, max-age=3000',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
       }
     });
 
