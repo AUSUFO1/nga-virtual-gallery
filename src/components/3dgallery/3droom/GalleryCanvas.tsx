@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment } from '@react-three/drei';
 import ArtworkFrame3D from '../ArtworkFrame3D';
@@ -25,8 +25,57 @@ interface GalleryCanvasProps {
   onArtworkClick: (artwork: Artwork) => void;
 }
 
-/**
- * 3D Canvas component for the gallery
+/*
+ Safe Environment Loader with Error Boundary
+ */
+function SafeEnvironment({ device }: { device: DeviceType }) {
+  const [envError, setEnvError] = useState(false);
+
+  if (envError || device === 'mobile') {
+    // Fallback: Just use standard lighting (no HDR environment)
+    return null;
+  }
+
+  return (
+    <ErrorBoundary onError={() => setEnvError(true)}>
+      <Suspense fallback={null}>
+        <Environment preset="warehouse" />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+/*
+ Simple Error Boundary Component
+ */
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode; onError: () => void },
+  { hasError: boolean }
+> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    console.warn('Environment loading failed, using fallback lighting:', error);
+    this.props.onError();
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return null;
+    }
+    return this.props.children;
+  }
+}
+
+/*
+ 3D Canvas component for the gallery
  */
 export default function GalleryCanvas({
   artworks,
@@ -47,15 +96,35 @@ export default function GalleryCanvas({
       }}
     >
       <Suspense fallback={null}>
-        {/* Lighting */}
+        {/* Enhanced Lighting (works offline) */}
         <ambientLight intensity={0.6} />
-        <directionalLight position={[10, 10, 5]} intensity={0.5} castShadow={device === 'desktop'} />
-        <pointLight position={[10, 10, 10]} intensity={0.4} />
-        <pointLight position={[-10, 10, -10]} intensity={0.3} />
-        <hemisphereLight intensity={0.3} groundColor="#1a4d2e" />
+        
+        {/* Main directional light (simulates sun) */}
+        <directionalLight 
+          position={[10, 10, 5]} 
+          intensity={0.8} 
+          castShadow={device === 'desktop'}
+          shadow-mapSize-width={1024}
+          shadow-mapSize-height={1024}
+        />
+        
+        {/* Fill lights */}
+        <pointLight position={[10, 10, 10]} intensity={0.4} color="#ffffff" />
+        <pointLight position={[-10, 10, -10]} intensity={0.3} color="#ffffff" />
+        <pointLight position={[0, 10, -10]} intensity={0.2} color="#f9faf8" />
+        
+        {/* Hemisphere light (sky + ground) */}
+        <hemisphereLight 
+          intensity={0.4} 
+          color="#ffffff"
+          groundColor="#1a4d2e" 
+        />
 
         {/* Gallery Room */}
         <Room device={device} />
+
+        {/* Optional HDR Environment (only on desktop, with fallback) */}
+        {device === 'desktop' && <SafeEnvironment device={device} />}
 
         {/* Artworks */}
         {artworks.map((artwork, index) => (

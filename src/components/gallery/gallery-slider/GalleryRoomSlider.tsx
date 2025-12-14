@@ -44,7 +44,6 @@ export default function GalleryRoomSlider({ rooms }: GalleryRoomSliderProps) {
     }
   }, [goToNext, goToPrev]);
 
-  // Auto-advance slider
   useEffect(() => {
     if (isPaused) return;
 
