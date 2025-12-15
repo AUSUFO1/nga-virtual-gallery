@@ -15,7 +15,7 @@ export default function LobbyFooter() {
         className="
           inline-flex items-center gap-2
           text-[#f9faf8] hover:text-[#a8cf45]
-          font-semibold
+          font-bold text-2xl
           transition-colors duration-300
           group
         "

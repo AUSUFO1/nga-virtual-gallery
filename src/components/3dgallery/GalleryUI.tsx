@@ -71,7 +71,7 @@ export default function GalleryUI({
       </div>
 
       {/* Controls Info (Bottom) */}
-      <div className="absolute bottom-4 left-4 z-10">
+      <div className="absolute bottom-20 left-4 z-10">
         <div className="
           bg-[#1a4d2e]/80 backdrop-blur-md
           px-4 py-3 rounded-lg

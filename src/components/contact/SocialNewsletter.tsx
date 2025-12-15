@@ -21,7 +21,7 @@ export default function SocialNewsletter() {
       <h2 className="text-3xl font-bold text-nga-navy">
         Connect With <span className="text-nga-green">Us</span>
       </h2>
-      <p className="text-[#f9faf8]/80 mb-8">
+      <p className="text-nga-cream/80 mb-8">
         Follow us on social media for updates, exhibitions, and Nigerian art news
       </p>
 
@@ -35,7 +35,7 @@ export default function SocialNewsletter() {
             rel="noopener noreferrer"
             whileHover={{ scale: 1.1, y: -5 }}
             whileTap={{ scale: 0.95 }}
-            className="w-14 h-14 rounded-full bg-[#1a4d2e] border-2 border-[#a8cf45]/30 hover:border-[#a8cf45] flex items-center justify-center transition-all hover:shadow-lg"
+            className="w-14 h-14 rounded-full bg-nga-navy border-2 border-nga-green/30 hover:border-nga-green flex items-center justify-center transition-all hover:shadow-lg"
             aria-label={social.name}
           >
             <social.icon className="w-6 h-6 text-nga-cream" />
@@ -45,9 +45,9 @@ export default function SocialNewsletter() {
 
       {/* Newsletter Signup */}
       <div className="max-w-md mx-auto w-full">
-        <div className="card bg-gradient-to-br from-[#1a4d2e] to-[#143d26] p-6 w-full">
+        <div className="card bg-linear-to-br from-nga-navy to-nga-navy/80 p-6 w-full border border-nga-navy/30">
           <h3 className="text-xl font-bold text-white mb-2">Stay Updated</h3>
-          <p className="text-[#f9faf8]/70 text-sm mb-4">
+          <p className="text-nga-cream/70 text-sm mb-4">
             Subscribe to our newsletter for exhibition updates
           </p>
           <form className="flex flex-col sm:flex-row gap-2 w-full" onSubmit={(e) => e.preventDefault()}>
@@ -55,7 +55,7 @@ export default function SocialNewsletter() {
               type="email"
               placeholder="Your email address"
               required
-              className="flex-1 px-4 py-2 rounded-lg bg-[#143d26] border border-[#a8cf45]/30 focus:border-[#a8cf45] focus:outline-none text-white placeholder:text-[#f9faf8]/50 w-full"
+              className="flex-1 px-4 py-2 rounded-lg bg-nga-navy/60 border border-nga-green/30 focus:border-nga-green focus:outline-none text-white placeholder:text-nga-cream/50 w-full"
             />
             <button type="submit" className="btn-primary px-6 py-2 whitespace-nowrap w-full sm:w-auto">
               Subscribe

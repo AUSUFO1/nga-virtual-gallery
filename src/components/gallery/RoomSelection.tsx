@@ -33,9 +33,9 @@ export default function RoomSelection({ galleryRooms, roomCounts, isLoading }: R
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.6 }}
-        className="text-center mb-8 px-4"
+        className="text-center px-4"
       >
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#f9faf8] mb-3">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#f9faf8] mb-4">
           Choose Your Gallery Room
         </h2>
         <p className="text-[#f9faf8]/70 text-base md:text-lg max-w-2xl mx-auto">

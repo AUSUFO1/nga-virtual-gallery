@@ -43,7 +43,7 @@ export default function LobbyHeader() {
         mb-4
         drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]
       ">
-        Virtual <span className="text-[#a8cf45]">3D Gallery</span>
+        Virtual <span className="text-nga-green">3D Gallery</span>
       </h1>
 
       {/* Subtitle */}
@@ -58,9 +58,9 @@ export default function LobbyHeader() {
 
       {/* Decorative Line */}
       <div className="flex items-center justify-center gap-4 mt-8">
-        <div className="h-px w-16 bg-linear-to-r from-transparent to-[#a8cf45]" />
-        <div className="w-2 h-2 rounded-full bg-[#a8cf45] animate-pulse" />
-        <div className="h-px w-16 bg-linear-to-l from-transparent to-[#a8cf45]" />
+        <div className="h-px w-16 bg-linear-to-r from-transparent to-nga-green" />
+        <div className="w-2 h-2 rounded-full bg-nga-green animate-pulse" />
+        <div className="h-px w-16 bg-linear-to-l from-transparent to-nga-green" />
       </div>
     </motion.div>
   );

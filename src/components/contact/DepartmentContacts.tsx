@@ -41,10 +41,9 @@ export default function DepartmentContacts() {
             initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-            className="card bg-linear-to-br from-[#1a4d2e] to-[#143d26] p-6 hover:shadow-[0_20px_60px_rgba(168,207,69,0.3)] transition-all w-full wrap-break-word"
-          >
+className="card bg-linear-to-br from-nga-navy to-nga-navy/80 p-6 hover:shadow-[0_20px_60px_rgba(0,51,102,0.4)] transition-all w-full wrap-break-word border border-nga-navy/30"          >
             <div className="flex items-start gap-4 w-full">
-              <div className="w-12 h-12 rounded-lg bg-[#a8cf45]/20 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-lg bg-nga-cream flex items-center justify-center shrink-0">
                 <Building2 className="w-6 h-6 text-nga-green" />
               </div>
               <div className="flex-1 min-w-0 overflow-hidden">
@@ -52,7 +51,7 @@ export default function DepartmentContacts() {
                 <p className="text-[#f9faf8]/70 text-sm mb-3 wrap-break-word">{dept.description}</p>
                 <a
                   href={`mailto:${dept.email}`}
-                  className="inline-flex items-center gap-2 text-nga-green hover:text-[#d1e28c] transition-colors text-sm font-semibold break-all"
+                  className="inline-flex items-center gap-2 text-nga-cream hover:text-nga-light-green transition-colors text-sm font-semibold break-all"
                 >
                   <Mail className="w-4 h-4 shrink-0" />
                   <span className="break-all">{dept.email}</span>

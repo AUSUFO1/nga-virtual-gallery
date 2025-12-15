@@ -31,7 +31,7 @@ interface GalleryCanvasProps {
 function SafeEnvironment({ device }: { device: DeviceType }) {
   const [envError, setEnvError] = useState(false);
 
-  if (envError || device === 'mobile') {
+  if (envError) {
     // Fallback: Just use standard lighting (no HDR environment)
     return null;
   }
@@ -123,8 +123,8 @@ export default function GalleryCanvas({
         {/* Gallery Room */}
         <Room device={device} />
 
-        {/* Optional HDR Environment (only on desktop, with fallback) */}
-        {device === 'desktop' && <SafeEnvironment device={device} />}
+        {/* HDR Environment (works on all devices with fallback) */}
+        <SafeEnvironment device={device} />
 
         {/* Artworks */}
         {artworks.map((artwork, index) => (
@@ -145,7 +145,7 @@ export default function GalleryCanvas({
           enableZoom={true}
           enableRotate={true}
           minDistance={2}
-          maxDistance={device === 'mobile' ? 8 : 15}
+          maxDistance={device === 'mobile' ? 8 : 10}
           maxPolarAngle={Math.PI / 2}
           target={[0, 1.6, 0]}
         />
