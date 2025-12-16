@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 interface ProtectedImageProps {
@@ -13,14 +13,6 @@ interface ProtectedImageProps {
   showWatermark?: boolean;
 }
 
-/*
- ProtectedImage Component
- Displays artwork images with security features:
- - Fetches signed URL from API (expires in 1 hour)
- - Disables right-click and drag
- - Shows watermark overlay
- - Prevents image theft
- */
 export default function ProtectedImage({
   artworkId,
   alt,
@@ -33,109 +25,144 @@ export default function ProtectedImage({
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isObscured, setIsObscured] = useState(false);
 
+  const sessionId = useRef(
+    Math.random().toString(36).substring(2, 10).toUpperCase()
+  );
+
+  /* LOAD SIGNED IMAGE URL */
   useEffect(() => {
-    let isMounted = true;
+    let mounted = true;
 
-    async function loadImage() {
+    const loadImage = async () => {
       try {
         setIsLoading(true);
-        setError(null);
+        const res = await fetch(`/api/artwork?id=${artworkId}`);
+        if (!res.ok) throw new Error('Failed to load artwork');
 
-        // Fetch signed URL from API
-        const response = await fetch(`/api/artwork?id=${artworkId}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to load image');
-        }
-
-        const data = await response.json();
-
-        if (isMounted) {
+        const data = await res.json();
+        if (mounted) {
           setImageUrl(data.url);
           setIsLoading(false);
         }
       } catch (err: any) {
-        console.error('Error loading image:', err);
-        if (isMounted) {
+        if (mounted) {
           setError(err.message);
           setIsLoading(false);
         }
       }
-    }
+    };
 
     loadImage();
-
-    // Refresh signed URL every 50 minutes (before 1-hour expiry)
-    const refreshInterval = setInterval(loadImage, 50 * 60 * 1000);
+    const refresh = setInterval(loadImage, 50 * 60 * 1000);
 
     return () => {
-      isMounted = false;
-      clearInterval(refreshInterval);
+      mounted = false;
+      clearInterval(refresh);
     };
   }, [artworkId]);
 
-  // Loading state
+  /* SCREENSHOT / RECORDING DETERRENCE */
+  useEffect(() => {
+    const obscure = () => setIsObscured(true);
+    const restore = () => setTimeout(() => setIsObscured(false), 300);
+
+    const handleVisibility = () => {
+      document.hidden ? obscure() : restore();
+    };
+
+    const handleKeys = (e: KeyboardEvent) => {
+      if (
+        e.key === 'PrintScreen' ||
+        (e.ctrlKey && e.shiftKey) ||
+        (e.metaKey && e.shiftKey)
+      ) {
+        e.preventDefault();
+        obscure();
+        restore();
+      }
+    };
+
+    window.addEventListener('blur', obscure);
+    window.addEventListener('focus', restore);
+    document.addEventListener('visibilitychange', handleVisibility);
+    document.addEventListener('keydown', handleKeys);
+
+    return () => {
+      window.removeEventListener('blur', obscure);
+      window.removeEventListener('focus', restore);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      document.removeEventListener('keydown', handleKeys);
+    };
+  }, []);
+
+  /* LOADING / ERROR STATES */
   if (isLoading) {
     return (
-      <div 
+      <div
         className={`relative bg-nga-navy animate-pulse flex items-center justify-center ${className}`}
         style={{ width, height }}
       >
-        <div className="text-[#a8cf45] text-sm">Loading artwork...</div>
+        <span className="text-[#a8cf45] text-sm">Loading artwork…</span>
       </div>
     );
   }
 
-  // Error state
   if (error || !imageUrl) {
     return (
-      <div 
+      <div
         className={`relative bg-nga-navy flex items-center justify-center ${className}`}
         style={{ width, height }}
       >
-        <div className="text-red-400 text-sm">Failed to load artwork</div>
+        <span className="text-red-400 text-sm">Artwork unavailable</span>
       </div>
     );
   }
 
-  // Protected image display
+  /* PROTECTED DISPLAY */
   return (
-    <div 
-      className={`relative select-none ${className}`}
+    <div
+      className={`relative select-none overflow-hidden ${className}`}
+      style={{ width, height }}
       onContextMenu={(e) => e.preventDefault()}
       onDragStart={(e) => e.preventDefault()}
-      style={{ width, height }}
     >
-      {/* Main Image */}
-      <Image
-        src={imageUrl}
-        alt={alt}
-        width={width}
-        height={height}
-        className="object-cover select-none pointer-events-none"
-        draggable={false}
-        priority={priority}
-        unoptimized={true}
-      />
+      {/* IMAGE */}
+      <div
+        className={`transition-all duration-200 ${
+          isObscured ? 'blur-2xl opacity-0' : 'blur-0 opacity-100'
+        }`}
+      >
+        <Image
+          src={imageUrl}
+          alt={alt}
+          width={width}
+          height={height}
+          priority={priority}
+          unoptimized
+          draggable={false}
+          className="object-cover pointer-events-none select-none"
+        />
+      </div>
 
-      {/* Watermark Overlay */}
+      {/* DYNAMIC WATERMARK */}
       {showWatermark && (
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <div 
-            className="text-white text-2xl md:text-4xl opacity-10 font-bold transform rotate-[-30deg] select-none"
-            style={{
-              textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
-              userSelect: 'none',
-              WebkitUserSelect: 'none',
-            }}
+          <div
+            className="text-white opacity-[0.08] text-xl md:text-3xl font-bold rotate-[-30deg] leading-snug text-center select-none"
+            style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.4)' }}
           >
-            © NATIONAL GALLERY OF ART
+            © NGA VIRTUAL GALLERY
+            <br />
+            ARTWORK: {artworkId}
+            <br />
+            SESSION: {sessionId.current}
           </div>
         </div>
       )}
 
-      {/* Invisible overlay to prevent interactions */}
+      {/* INVISIBLE INTERACTION SHIELD */}
       <div className="absolute inset-0 cursor-default" />
     </div>
   );
