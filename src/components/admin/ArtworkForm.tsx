@@ -93,7 +93,6 @@ export default function ArtworkForm({ formData, setFormData, isUploading, imageF
           <option value="photography">Photography</option>
           <option value="textile">Textile</option>
           <option value="mixed-media">Mixed Media</option>
-          <option value="contemporary">Contemporary</option>
           <option value="traditional">Traditional</option>
         </select>
       </div>

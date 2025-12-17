@@ -10,8 +10,6 @@ export const CATEGORIES = [
   { id: 'photography', label: 'Photography', icon: Camera },
   { id: 'textile', label: 'Textile', icon: Scissors },
   { id: 'mixed-media', label: 'Mixed Media', icon: Layers },
-  { id: 'contemporary', label: 'Contemporary', icon: Sparkle },
-  { id: 'traditional', label: 'Traditional', icon: Archive },
 ];
 
 interface CategoryFiltersProps {
