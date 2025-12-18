@@ -9,7 +9,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY! // Changed from ANON_KEY for POST operations
 );
 
-/**
+/*
  * GET /api/artworks/featured
  * 
  * Returns EXACTLY 10 most recent featured artworks for homepage
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       .select('*')
       .eq('is_featured', true)
       .order('created_at', { ascending: false })
-      .limit(10); // Changed from 9 to 10
+      .limit(12); // Changed from 9 to 10
 
     if (error) {
       console.error('Supabase error:', error);
@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-/**
+/*
  * POST /api/artworks/featured
  * 
  * Maintenance endpoint - Keeps only 10 most recent featured artworks
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
     console.log(`Current featured count: ${currentCount}`);
 
     // If more than 10, un-feature the oldest ones
-    if (allFeatured && currentCount > 10) {
+    if (allFeatured && currentCount > 12) {
       const toUnfeature = allFeatured.slice(10); // Get everything after first 10
       const idsToUnfeature = toUnfeature.map(art => art.id);
 
