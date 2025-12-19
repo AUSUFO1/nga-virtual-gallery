@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function LobbyFooter() {
   return (
@@ -8,28 +9,44 @@ export default function LobbyFooter() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1 }}
-      className="text-center mt-6 pb-5"
+      className="text-center mt-6 pb-8 flex flex-col md:flex-row items-center justify-center gap-6 px-4"
     >
-      <a 
+      {/* Browse all artworks link */}
+      <Link
         href="/collections"
         className="
           inline-flex items-center gap-2
-          text-[#f9faf8] hover:text-[#a8cf45]
-          font-bold text-2xl
+          text-white hover:text-[#a8cf45]
+          font-semibold text-lg md:text-xl
           transition-colors duration-300
           group
         "
       >
-        <span>Or browse all artworks in grid view</span>
-        <svg 
-          className="w-5 h-5 group-hover:translate-x-1 transition-transform" 
-          fill="none" 
-          stroke="currentColor" 
+        <span>Browse all artworks in grid view</span>
+        <svg
+          className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+          fill="none"
+          stroke="currentColor"
           viewBox="0 0 24 24"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
         </svg>
-      </a>
+      </Link>
+
+      {/* Visit homepage button */}
+      <Link
+        href="/"
+        className="
+          inline-flex items-center gap-2
+          bg-[#20a25b] hover:bg-[#1a8c47]
+          text-white font-semibold
+          py-2 px-4 rounded-lg
+          text-lg md:text-xl
+          transition-all duration-300
+        "
+      >
+        Visit Homepage
+      </Link>
     </motion.div>
   );
 }

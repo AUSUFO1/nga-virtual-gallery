@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Shield, FileText } from 'lucide-react';
+import { FileText } from 'lucide-react';
 
 export default function PrivacyPolicy() {
   return (
@@ -29,10 +29,6 @@ export default function PrivacyPolicy() {
         {/* Policy Content */}
         <section className="bg-white rounded-lg p-6 md:p-10 max-w-3xl mx-auto">
           
-          <h2 className="text-xl md:text-3xl font-bold text-black mb-6 flex items-center">
-            <Shield className="w-8 h-8 flex-wrap mr-3 text-nga-navy" />
-            Our Privacy Commitment
-          </h2>
 
           <p className="text-black leading-relaxed mb-5">
             The National Gallery of Art (“NGA”) respects your privacy. This Virtual Gallery

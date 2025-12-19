@@ -10,8 +10,6 @@ const VALID_CATEGORIES = [
   'photography',
   'textile',
   'mixed-media',
-  'contemporary',
-  'traditional',
 ] as const;
 
 type Category = (typeof VALID_CATEGORIES)[number];
@@ -22,8 +20,6 @@ const CATEGORY_LABELS: Record<Category, string> = {
   photography: 'Photography Room',
   textile: 'Textile Room',
   'mixed-media': 'Mixed Media Room',
-  contemporary: 'Contemporary Room',
-  traditional: 'Traditional Room',
 };
 
 export default function GalleryRoomPage() {
