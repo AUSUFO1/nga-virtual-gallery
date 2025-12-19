@@ -21,16 +21,22 @@ interface Artwork {
 interface GalleryRoom3DProps {
   category: string;
   categoryLabel: string;
+  artworksPerRoom?: number; // optional, default 15
 }
 
 /**
- * Main 3D Gallery Room Component
+ * Main 3D Gallery Room Component with Pagination
  */
-export default function GalleryRoom3D({ category, categoryLabel }: GalleryRoom3DProps) {
+export default function GalleryRoom3D({
+  category,
+  categoryLabel,
+  artworksPerRoom = 15,
+}: GalleryRoom3DProps) {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [artworkUrls, setArtworkUrls] = useState<Record<string, string>>({});
   const [artworkSignedUrls, setArtworkSignedUrls] = useState<Record<string, string>>({});
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [currentRoom, setCurrentRoom] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const device = useDeviceType();
@@ -42,45 +48,39 @@ export default function GalleryRoom3D({ category, categoryLabel }: GalleryRoom3D
         setIsLoading(true);
         setError(null);
 
-        // 1. Fetch artwork metadata from Supabase (via API)
-        const res = await fetch(`/api/artworks?category=${category}&limit=50`);
-        
-        if (!res.ok) {
-          throw new Error('Failed to load artworks');
-        }
+        const res = await fetch(`/api/artworks?category=${category}&limit=100`);
+        if (!res.ok) throw new Error('Failed to load artworks');
 
         const data = await res.json();
-        const fetchedArtworks = data.artworks || [];
+        const fetchedArtworks: Artwork[] = data.artworks || [];
 
-        // Limit artworks based on device
-        const maxArtworks = device === 'mobile' ? 8 : device === 'tablet' ? 12 : 30;
+        // Limit artworks per device (optional)
+        const maxArtworks = device === 'mobile' ? 30 : device === 'tablet' ? 50 : 100;
         const limitedArtworks = fetchedArtworks.slice(0, maxArtworks);
-        
+
         setArtworks(limitedArtworks);
 
-        // 2. Use proxy URLs for 3D textures (avoid CORS issues)
+        // Proxy URLs for 3D textures and signed URLs
         const urls: Record<string, string> = {};
         const signedUrls: Record<string, string> = {};
-        
-        for (const artwork of limitedArtworks) {
-          // Proxy URL for 3D textures
-          urls[artwork.imageId] = `/api/artwork/image?id=${artwork.imageId}`;
-          
-          // Fetch signed URL for modal display (higher quality)
+
+        for (const art of limitedArtworks) {
+          urls[art.imageId] = `/api/artwork/image?id=${art.imageId}`;
           try {
-            const urlRes = await fetch(`/api/artwork?id=${artwork.imageId}`);
-            if (urlRes.ok) {
-              const urlData = await urlRes.json();
-              signedUrls[artwork.imageId] = urlData.url;
+            const signedRes = await fetch(`/api/artwork?id=${art.imageId}`);
+            if (signedRes.ok) {
+              const signedData = await signedRes.json();
+              signedUrls[art.imageId] = signedData.url;
             }
           } catch (err) {
-            console.error(`Failed to fetch signed URL for ${artwork.imageId}:`, err);
+            console.error(`Failed to fetch signed URL for ${art.imageId}`, err);
           }
         }
 
         setArtworkUrls(urls);
         setArtworkSignedUrls(signedUrls);
         setIsLoading(false);
+        setCurrentRoom(1); // reset to room 1 on category change
       } catch (err: any) {
         console.error('Error loading gallery:', err);
         setError(err.message);
@@ -90,6 +90,21 @@ export default function GalleryRoom3D({ category, categoryLabel }: GalleryRoom3D
 
     loadGallery();
   }, [category, device]);
+
+  // Pagination logic
+  const totalRooms = Math.ceil(artworks.length / artworksPerRoom);
+  const currentArtworks = artworks.slice(
+    (currentRoom - 1) * artworksPerRoom,
+    currentRoom * artworksPerRoom
+  );
+
+  const handleNext = () => {
+    if (currentRoom < totalRooms) setCurrentRoom(currentRoom + 1);
+  };
+
+  const handlePrevious = () => {
+    if (currentRoom > 1) setCurrentRoom(currentRoom - 1);
+  };
 
   // Loading state
   if (isLoading) {
@@ -136,11 +151,17 @@ export default function GalleryRoom3D({ category, categoryLabel }: GalleryRoom3D
     );
   }
 
+  // Main 3D room render
   return (
-    <div className="relative w-full h-screen bg-linear-to-b from-[#20a25b] to-[#1a4d2e]">
+    <div className="relative w-full h-screen bg-linear-to-b from-[#20a25b] to-[#1a4d2e] flex flex-col">
+      {/* Room Header with Pagination */}
+      <div className="p-8 text-white text-lg md:text-xl font-bold text-center">
+        {categoryLabel} - Room {currentRoom} of {totalRooms}
+      </div>
+
       {/* 3D Canvas */}
       <GalleryCanvas
-        artworks={artworks}
+        artworks={currentArtworks}
         artworkUrls={artworkUrls}
         device={device}
         onArtworkClick={setSelectedArtwork}
@@ -149,11 +170,32 @@ export default function GalleryRoom3D({ category, categoryLabel }: GalleryRoom3D
       {/* UI Overlay */}
       <GalleryUI
         categoryLabel={categoryLabel}
-        artworkCount={artworks.length}
+        artworkCount={currentArtworks.length}
         selectedArtwork={selectedArtwork}
         onCloseArtwork={() => setSelectedArtwork(null)}
         artworkUrl={selectedArtwork ? artworkSignedUrls[selectedArtwork.imageId] : undefined}
       />
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center items-center gap-4 py-4 text-white font-semibold">
+        <button
+          onClick={handlePrevious}
+          disabled={currentRoom === 1}
+          className="px-4 py-2 bg-[#1a4d2e] rounded hover:bg-[#20a25b] disabled:opacity-50 transition-colors"
+        >
+          &lt; Previous
+        </button>
+        <span>
+          Room {currentRoom} of {totalRooms}
+        </span>
+        <button
+          onClick={handleNext}
+          disabled={currentRoom === totalRooms}
+          className="px-4 py-2 bg-[#1a4d2e] rounded hover:bg-[#20a25b] disabled:opacity-50 transition-colors"
+        >
+          Next &gt;
+        </button>
+      </div>
     </div>
   );
 }

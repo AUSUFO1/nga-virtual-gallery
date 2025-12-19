@@ -21,9 +21,8 @@ interface GalleryUIProps {
   artworkUrl?: string;
 }
 
-/**
+/*
  * Gallery UI Overlay
- * 
  * Controls, info panels, and artwork details
  */
 export default function GalleryUI({
