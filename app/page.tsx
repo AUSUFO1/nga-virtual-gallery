@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import SplashScreen from '@/src/components/SplashScreen';
+import Navbar from '@/src/components/NavBar';
 import Hero from '@/src/components/Hero';
 import FeaturedCollection from '@/src/components/FeaturedCollection';
+import Footer from '@/src/components/Footer';
 
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
@@ -33,8 +35,10 @@ export default function Home() {
       {/* Main Content - Only render after splash is complete */}
       {!showSplash && (
         <>
+          <Navbar />
           <Hero />
           <FeaturedCollection />
+          <Footer />
         </>
       )}
     </main>

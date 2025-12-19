@@ -39,7 +39,7 @@ export default function ArtworkFrame3D({
 
   return (
     <group position={position} rotation={rotation}>
-      {/* ================= FRAME ================= */}
+      {/* FRAME */}
       <group position={[0, 0, 0.01]}>
         {/* Top */}
         <mesh position={[0, artSize[1] / 2 + FRAME_THICKNESS / 2, 0]}>
@@ -74,7 +74,7 @@ export default function ArtworkFrame3D({
         </mesh>
       </group>
 
-      {/* ================= ARTWORK ================= */}
+      {/* ARTWORK */}
       <mesh
         position={[0, 0, 0.02]}
         onClick={(e) => {

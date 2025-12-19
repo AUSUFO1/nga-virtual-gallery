@@ -9,7 +9,7 @@ export default function LobbyFooter() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1 }}
-      className="text-center mt-6 pb-8 flex flex-col md:flex-row items-center justify-center gap-6 px-4"
+      className="text-center pb-8 flex flex-col md:flex-row items-center justify-center gap-6 px-4"
     >
       {/* Browse all artworks link */}
       <Link

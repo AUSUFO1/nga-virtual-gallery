@@ -10,8 +10,6 @@ import SculptureIcon from '@/public/icon/SculptureIcon';
 import PhotographyIcon from '@/public/icon/PhotographyIcon';
 import TextileIcon from '@/public/icon/TextileIcon';
 import MixedMediaIcon from '@/public/icon/MixedMediaIcon';
-import ContemporaryIcon from '@/public/icon/ContemporaryIcon';
-import TraditionalIcon from '@/public/icon/TraditionalIcon';
 
 export const GALLERY_ROOMS = [
   { id: 'painting', label: 'Painting Room', Icon: PaintingIcon, category: 'painting' },
@@ -19,8 +17,6 @@ export const GALLERY_ROOMS = [
   { id: 'photography', label: 'Photography Room', Icon: PhotographyIcon, category: 'photography' },
   { id: 'textile', label: 'Textile Room', Icon: TextileIcon, category: 'textile' },
   { id: 'mixed-media', label: 'Mixed Media Room', Icon: MixedMediaIcon, category: 'mixed-media' },
-  { id: 'contemporary', label: 'Contemporary Room', Icon: ContemporaryIcon, category: 'contemporary' },
-  { id: 'traditional', label: 'Traditional Room', Icon: TraditionalIcon, category: 'traditional' },
 ];
 
 

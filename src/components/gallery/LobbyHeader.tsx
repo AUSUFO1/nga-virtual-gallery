@@ -10,14 +10,14 @@ export default function LobbyHeader() {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.2 }}
-      className="text-center lg:mt-15 mt-5 pt-20 pb-12 px-4"
+      className="text-center mt-5 pt-20 pb-12 px-4"
     >
       {/* NGA Logo */}
       <motion.div
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ duration: 1, type: 'spring', stiffness: 100 }}
-        className="flex justify-center mb-8"
+        className="flex justify-center mb-6"
       >
         <div className="
           w-32 h-32 md:w-40 md:h-40
