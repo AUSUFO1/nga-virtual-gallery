@@ -59,11 +59,11 @@ export default function FeaturedCollection() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold mb-4">
             Featured <span className="text-nga-green">Collection</span>
           </h2>
 
-          <p className="text-nga-navy/70 text-lg md:text-2xl font-bold max-w-2xl mx-auto leading-relaxed">
+          <p className="text-nga-navy/70 text-sm md:text-2xl font-bold max-w-2xl mx-auto leading-relaxed">
             Explore an exclusive selection of artworks representing
             Nigeria's cultural identity, innovations, and artistic legacy.
           </p>

@@ -18,7 +18,7 @@ export default function ContactPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h1 className="text-3xl md:text-6xl font-bold text-nga-navy mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-nga-navy mb-4">
             Contact <span className="text-nga-green">NGA</span>
           </h1>
           <p className="text-nga-navy text-sm lg:text-2xl font-bold max-w-2xl mx-auto">

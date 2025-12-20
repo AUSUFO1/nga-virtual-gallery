@@ -22,13 +22,29 @@ export const metadata: Metadata = {
   title: 'National Gallery of Art - Virtual 3D Gallery',
   description:
     "Explore Nigeria's rich artistic heritage through our immersive Virtual 3D Gallery.",
+  icons: {
+    icon: '/images/NGA-Logo.png',
+    shortcut: '/images/NGA-Logo.png',
+    apple: '/images/NGA-Logo.png',
+  },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <body className="font-poppins antialiased flex flex-col min-h-screen">
-        {children} {/* No Navbar or Footer here */}
+    <html
+      lang="en"
+      className={`scroll-smooth ${poppins.variable}`}
+      suppressHydrationWarning
+    >
+      <body 
+        className="font-poppins antialiased flex flex-col min-h-screen"
+        suppressHydrationWarning
+      >
+        {children}
       </body>
     </html>
   );

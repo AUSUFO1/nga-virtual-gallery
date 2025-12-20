@@ -6,22 +6,22 @@ import { Mail, Building2 } from 'lucide-react';
 const DEPARTMENTS = [
   {
     name: 'Curatorial',
-    email: 'curatorial@nationalgallery.gov.ng',
+    email: 'curators@nga.gov.ng',
     description: 'Artwork exhibitions, collections, and curation inquiries',
   },
   {
     name: 'Education',
-    email: 'education@nationalgallery.gov.ng',
+    email: 'info@nga.gov.ng',
     description: 'School visits, workshops, and educational programs',
   },
   {
     name: 'Administration',
-    email: 'admin@nationalgallery.gov.ng',
+    email: 'hrm@nga.gov.ng',
     description: 'General administration and operational matters',
   },
   {
     name: 'Press & Media',
-    email: 'press@nationalgallery.gov.ng',
+    email: 'info@nga.gov.ng',
     description: 'Media inquiries, press releases, and partnerships',
   },
 ];

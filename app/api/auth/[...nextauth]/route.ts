@@ -31,7 +31,7 @@ const handler = NextAuth({
           return null; // invalid login
         }
 
-        /* 2 Check admin role */
+        /* 2️ Check admin role */
         const { data: profile } = await supabase
           .from('profiles')
           .select('role')
@@ -42,7 +42,7 @@ const handler = NextAuth({
           return null; // not an admin
         }
 
-        /* 3 Return user to NextAuth */
+        /* 3️ Return user to NextAuth */
         return {
           id: data.user.id,
           email: data.user.email,
@@ -52,8 +52,29 @@ const handler = NextAuth({
     }),
   ],
 
+  // Session configuration with expiry
   session: {
     strategy: 'jwt',
+    maxAge: 4 * 60 * 60, // 4 hours (in seconds)
+    updateAge: 60 * 60, // Update session every 1 hour if active
+  },
+
+  // JWT configuration
+  jwt: {
+    maxAge: 4 * 60 * 60, // Should match session maxAge
+  },
+
+  // Cookie configuration
+  cookies: {
+    sessionToken: {
+      name: 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+      },
+    },
   },
 
   callbacks: {

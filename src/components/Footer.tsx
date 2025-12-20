@@ -18,7 +18,7 @@ export default function Footer() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-2xl font-bold mb-4 text-nga-cream">
+            <h3 className="text-xl md:text-lg font-bold mb-4 text-nga-cream">
               National Gallery of Art
             </h3>
             <p className="text-nga-cream/70 text-sm leading-relaxed mb-4">

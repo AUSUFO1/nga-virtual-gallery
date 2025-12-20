@@ -25,7 +25,7 @@ export default function Navbar() {
       className="fixed top-0 left-0 right-0 z-50 bg-nga-cream/95 shadow-xl backdrop-blur-xl"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative flex items-center h-16 md:h-20">
+        <div className="relative mb-2 flex items-stretch h-16 md:h-20">
 
           {/* LOGO */}
           <div className="shrink-0">
@@ -37,7 +37,7 @@ export default function Navbar() {
               <Image
                 src={Logo}
                 alt="NGA Logo"
-                className="w-10 h-10 md:w-12 md:h-12 object-contain"
+                className="w-15 h-15 md:w-20 md:h-20 object-contain"
                 priority
               />
             </motion.div>
@@ -45,7 +45,7 @@ export default function Navbar() {
 
           {/* DESKTOP NAV */}
           <div className="hidden md:flex absolute left-1/2 -translate-x-1/2">
-            <div className="flex items-center gap-2 p-2 bg-nga-navy/40 backdrop-blur-md rounded-full border border-nga-green/40 shadow-lg">
+            <div className="flex items-center gap-2 mt-2 p-3 bg-nga-navy/40 backdrop-blur-md rounded-full border border-nga-green/40 shadow-lg">
               {navLinks.map((link, index) => {
                 const isActive = pathname === link.href; //determine active from pathname
                 return (
@@ -56,7 +56,7 @@ export default function Navbar() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 + 0.12 }}
                     className={`
-                      font-poppins text-sm px-5 py-2 rounded-full transition-all duration-300
+                      font-poppins text-xl px-5 py-2 rounded-full transition-all duration-300
                       ${isActive 
                         ? "bg-nga-navy text-nga-cream shadow-md" 
                         : "text-black hover:text-nga-navy"}
@@ -82,7 +82,7 @@ export default function Navbar() {
                   animate={{ rotate: 90 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <X className="w-7 h-7 text-nga-green" strokeWidth={2.5} />
+                  <X className="w-7 h-7 mt-2 text-nga-green" strokeWidth={2.5} />
                 </motion.div>
               ) : (
                 <motion.div
@@ -93,7 +93,7 @@ export default function Navbar() {
                   transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
                 >
                   <Sparkles
-                    className="w-7 h-7 text-nga-navy"
+                    className="w-8 h-8 mt-2 text-nga-navy"
                     strokeWidth={2}
                     fill="currentColor"
                   />

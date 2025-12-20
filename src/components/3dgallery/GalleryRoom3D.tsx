@@ -24,7 +24,7 @@ interface GalleryRoom3DProps {
   artworksPerRoom?: number; // optional, default 15
 }
 
-/**
+/*
  * Main 3D Gallery Room Component with Pagination
  */
 export default function GalleryRoom3D({

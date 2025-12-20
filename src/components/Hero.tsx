@@ -93,7 +93,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className={`${playfair.variable} text-lg sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight drop-shadow-[0_4px_26px_rgba(0,0,0,0.7)]`}
+            className={`${playfair.variable} text-sm md:text-3xl lg:text-4xl font-extrabold leading-tight drop-shadow-[0_4px_26px_rgba(0,0,0,0.7)]`}
           >
             {headlines[currentHeadline].parts.map((part, i) => (
               <span key={i} className={part.className}>{part.text} </span>

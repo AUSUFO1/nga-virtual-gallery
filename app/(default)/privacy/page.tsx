@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { FileText } from 'lucide-react';
 
 export default function PrivacyPolicy() {
@@ -8,7 +7,7 @@ export default function PrivacyPolicy() {
       {/* Header */}
       <header className=" bg-nga-navy text-white py-6 shadow-md">
         <div className="container-custom">
-          <h1 className="text-xl mt-15 md:text-4xl font-bold">Privacy Policy</h1>
+          <h1 className="text-xl mt-18 md:text-4xl font-bold">Privacy Policy</h1>
           <p className="text-[#f9faf8]/80 mt-3">
             National Gallery of Art – Virtual Gallery
           </p>

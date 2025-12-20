@@ -30,9 +30,6 @@ export default function AccessibilityPage() {
         {/* Accessibility Statement */}
         <section className="bg-white rounded-lg p-6 md:p-10 max-w-3xl mx-auto">
           
-          <h2 className="text-2xl md:text-3xl font-bold text-black mb-6 flex items-center">
-            Our Commitment to Accessibility
-          </h2>
 
           <p className="text-black leading-relaxed mb-5">
             The National Gallery of Art (NGA) is committed to ensuring that our Virtual
