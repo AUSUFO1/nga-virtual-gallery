@@ -1,5 +1,41 @@
-import Link from 'next/link';
+
+import type { Metadata } from 'next';
 import { FileText } from 'lucide-react';
+
+
+export const metadata: Metadata = {
+  title: 'Accessibility Statement',
+  description:
+    'Accessibility statement for the National Gallery of Art Virtual 3D Gallery. Learn how we ensure inclusive access for all users.',
+
+  openGraph: {
+    title: 'Accessibility | National Gallery of Art',
+    description:
+      'Our commitment to accessibility and inclusive access in the National Gallery of Art Virtual 3D Gallery.',
+    url: '/accessibility',
+    images: [
+      {
+        url: '/og-image.jpg', 
+        width: 1200,
+        height: 630,
+        alt: 'National Gallery of Art Virtual Gallery',
+      },
+    ],
+  },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Accessibility | National Gallery of Art',
+    description:
+      'Read the accessibility statement for the National Gallery of Art Virtual 3D Gallery.',
+    images: ['/og-image.jpg'],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 export default function AccessibilityPage() {
   return (
@@ -8,8 +44,9 @@ export default function AccessibilityPage() {
       {/* Header */}
       <header className="bg-nga-navy mt-20 text-white py-6 shadow-md">
         <div className="container-custom">
-
-          <h1 className="text-3xl md:text-4xl font-bold">Accessibility</h1>
+          <h1 className="text-3xl md:text-4xl font-bold">
+            Accessibility
+          </h1>
           <p className="text-[#f9faf8]/80 mt-2">
             National Gallery of Art – Virtual Gallery
           </p>
@@ -29,8 +66,6 @@ export default function AccessibilityPage() {
 
         {/* Accessibility Statement */}
         <section className="bg-white rounded-lg p-6 md:p-10 max-w-3xl mx-auto">
-          
-
           <p className="text-black leading-relaxed mb-5">
             The National Gallery of Art (NGA) is committed to ensuring that our Virtual
             Gallery website is accessible and usable for as many people as possible,

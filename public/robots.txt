@@ -1,0 +1,15 @@
+# public/robots.txt
+
+# Allow all search engines to crawl everything
+User-agent: *
+Allow: /
+
+# Disallow admin routes
+Disallow: /admin/
+Disallow: /api/admin/
+
+# Sitemap location
+Sitemap: https://your-domain.com/sitemap.xml
+
+# Crawl-delay (optional, prevents aggressive crawling)
+Crawl-delay: 1
