@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
     // Build query with count
     let query = supabase
       .from('artworks')
-      .select('*', { count: 'exact' }) // ✅ Request count
+      .select('*', { count: 'exact' }) // Request count
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 

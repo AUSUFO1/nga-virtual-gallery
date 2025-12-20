@@ -19,10 +19,7 @@ const ROOM = {
   },
 };
 
-/**
- * Distance artwork sits off the wall surface
- * (prevents z-fighting, adds realism)
- */
+
 const WALL_OFFSET = 0.08;
 
 /**
@@ -75,9 +72,7 @@ export function getArtworkPosition(
   }
 }
 
-/**
- * Rotation aligned strictly to wall normals
- */
+
 export function getArtworkRotation(
   index: number,
   device: DeviceType

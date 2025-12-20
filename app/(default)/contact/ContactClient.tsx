@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import ContactInfoCards from '@/src/components/contact/ContactInfoCards';
 import DepartmentContacts from '@/src/components/contact/DepartmentContacts';
-import LocationMap from '@/src/components/contact/LocationMap';
 import SocialNewsletter from '@/src/components/contact/SocialNewsletter';
 
 export default function ContactClient() {
@@ -28,7 +27,6 @@ export default function ContactClient() {
 
         <ContactInfoCards />
         <DepartmentContacts />
-        <LocationMap />
         <SocialNewsletter />
       </div>
     </div>

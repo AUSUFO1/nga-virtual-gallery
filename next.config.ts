@@ -21,22 +21,19 @@ const baseSecurityHeaders = [
 const fullSecurityHeaders = [
   ...baseSecurityHeaders,
   {
-   key: "Content-Security-Policy",
-value: [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com",
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://www.google.com https://maps.gstatic.com",
-  "font-src 'self' data:",
-  "connect-src 'self' https:",
-  "object-src 'none'",
-  "frame-src 'self' https://www.google.com https://www.google.com/maps",
-  "child-src https://www.google.com https://www.google.com/maps",
-  "frame-ancestors 'none'",
-  "base-uri 'self'",
-  "form-action 'self'"
-].join("; "),
-
+    key: "Content-Security-Policy",
+    value: [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob: https:",
+      "font-src 'self' data:",
+      "connect-src 'self' https:",
+      "object-src 'none'",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join("; "),
   },
 ];
 

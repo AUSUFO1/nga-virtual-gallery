@@ -26,7 +26,7 @@ export default function Room({ device }: RoomProps) {
 
   return (
     <group>
-      {/* ================= FLOOR ================= */}
+      {/* FLOOR  */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, 0, 0]}
@@ -40,7 +40,7 @@ export default function Room({ device }: RoomProps) {
         />
       </mesh>
 
-      {/* ================= CEILING ================= */}
+      {/*  CEILING  */}
       <mesh
         rotation={[Math.PI / 2, 0, 0]}
         position={[0, roomHeight, 0]}
@@ -52,7 +52,7 @@ export default function Room({ device }: RoomProps) {
         />
       </mesh>
 
-      {/* ================= BACK WALL ================= */}
+      {/* BACK WALL */}
       <mesh
         position={[0, roomHeight / 2, -roomDepth / 2]}
         receiveShadow
@@ -66,7 +66,7 @@ export default function Room({ device }: RoomProps) {
         />
       </mesh>
 
-      {/* ================= LEFT WALL ================= */}
+      {/* LEFT WALL */}
       <mesh
         position={[-roomWidth / 2, roomHeight / 2, 0]}
         receiveShadow
@@ -80,7 +80,7 @@ export default function Room({ device }: RoomProps) {
         />
       </mesh>
 
-      {/* ================= RIGHT WALL ================= */}
+      {/* RIGHT WALL */}
       <mesh
         position={[roomWidth / 2, roomHeight / 2, 0]}
         receiveShadow
