@@ -1,5 +1,7 @@
+// public/icon/MixedMediaIcon.tsx
 import * as React from "react";
-const MixedMediaIcon = (props) => (
+
+const MixedMediaIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
     <rect width={256} height={256} fill="none" />
     <circle
@@ -38,4 +40,5 @@ const MixedMediaIcon = (props) => (
     />
   </svg>
 );
+
 export default MixedMediaIcon;

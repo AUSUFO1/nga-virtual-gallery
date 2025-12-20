@@ -37,7 +37,7 @@ export default function LobbyHeader() {
 
       {/* Title */}
       <h1 className="
-        text-4xl md:text-6xl lg:text-7xl 
+        text-3xl md:text-5xl lg:text-7xl 
         font-bold 
         text-white 
         mb-4

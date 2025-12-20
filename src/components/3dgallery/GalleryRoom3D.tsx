@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import GalleryUI from './GalleryUI';
 import GalleryCanvas from './3droom/GalleryCanvas';
@@ -21,16 +19,13 @@ interface Artwork {
 interface GalleryRoom3DProps {
   category: string;
   categoryLabel: string;
-  artworksPerRoom?: number; // optional, default 15
+  artworksPerRoom?: number;
 }
 
-/*
- * Main 3D Gallery Room Component with Pagination
- */
 export default function GalleryRoom3D({
   category,
   categoryLabel,
-  artworksPerRoom = 15,
+  artworksPerRoom = 15, // 🎯 ADJUST: Default artworks per room
 }: GalleryRoom3DProps) {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [artworkUrls, setArtworkUrls] = useState<Record<string, string>>({});
@@ -54,7 +49,7 @@ export default function GalleryRoom3D({
         const data = await res.json();
         const fetchedArtworks: Artwork[] = data.artworks || [];
 
-        // Limit artworks per device (optional)
+        // ADJUST: Maximum artworks per device type
         const maxArtworks = device === 'mobile' ? 30 : device === 'tablet' ? 50 : 100;
         const limitedArtworks = fetchedArtworks.slice(0, maxArtworks);
 
@@ -106,7 +101,7 @@ export default function GalleryRoom3D({
     if (currentRoom > 1) setCurrentRoom(currentRoom - 1);
   };
 
-  // Loading state
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-linear-to-b from-[#20a25b] to-[#1a4d2e] flex items-center justify-center">
@@ -118,14 +113,16 @@ export default function GalleryRoom3D({
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="min-h-screen bg-linear-to-b from-[#20a25b] to-[#1a4d2e] flex items-center justify-center px-4">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Failed to Load Gallery</h2>
           <p className="text-[#f9faf8]/70 mb-8">{error}</p>
-          <button onClick={() => window.location.reload()} className="btn-primary">
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-6 py-3 bg-[#a8cf45] text-[#1a4d2e] rounded-lg font-semibold hover:bg-[#c5e86c] transition-colors"
+          >
             Retry
           </button>
         </div>
@@ -133,7 +130,7 @@ export default function GalleryRoom3D({
     );
   }
 
-  // Empty state
+ 
   if (artworks.length === 0) {
     return (
       <div className="min-h-screen bg-linear-to-b from-[#20a25b] to-[#1a4d2e] flex items-center justify-center px-4">
@@ -143,7 +140,7 @@ export default function GalleryRoom3D({
           <p className="text-[#f9faf8]/70 mb-8">
             This gallery room is currently empty. Check back soon!
           </p>
-          <a href="/gallery" className="btn-primary">
+          <a href="/gallery" className="px-6 py-3 bg-[#a8cf45] text-[#1a4d2e] rounded-lg font-semibold hover:bg-[#c5e86c] transition-colors inline-block">
             ← Back to Lobby
           </a>
         </div>
@@ -151,15 +148,13 @@ export default function GalleryRoom3D({
     );
   }
 
-  // Main 3D room render
   return (
     <div className="relative w-full h-screen bg-linear-to-b from-[#20a25b] to-[#1a4d2e] flex flex-col">
-      {/* Room Header with Pagination */}
-      <div className="p-8 text-white text-lg md:text-xl font-bold text-center">
-        {categoryLabel} - Room {currentRoom} of {totalRooms}
-      </div>
 
-      {/* 3D Canvas */}
+      <div className="px-6 mt-10 py-6 sm:px-6 sm:py-5 md:px-8 md:py-6 lg:py-8 text-white text-sm sm:text-base md:text-lg lg:text-xl font-bold text-center">
+        
+       Room {currentRoom} of {totalRooms}
+      </div>
       <GalleryCanvas
         artworks={currentArtworks}
         artworkUrls={artworkUrls}
@@ -167,7 +162,6 @@ export default function GalleryRoom3D({
         onArtworkClick={setSelectedArtwork}
       />
 
-      {/* UI Overlay */}
       <GalleryUI
         categoryLabel={categoryLabel}
         artworkCount={currentArtworks.length}
@@ -176,25 +170,54 @@ export default function GalleryRoom3D({
         artworkUrl={selectedArtwork ? artworkSignedUrls[selectedArtwork.imageId] : undefined}
       />
 
-      {/* Pagination Controls */}
-      <div className="flex justify-center items-center gap-4 py-4 text-white font-semibold">
-        <button
-          onClick={handlePrevious}
-          disabled={currentRoom === 1}
-          className="px-4 py-2 bg-[#1a4d2e] rounded hover:bg-[#20a25b] disabled:opacity-50 transition-colors"
-        >
-          &lt; Previous
-        </button>
-        <span>
-          Room {currentRoom} of {totalRooms}
-        </span>
-        <button
-          onClick={handleNext}
-          disabled={currentRoom === totalRooms}
-          className="px-4 py-2 bg-[#1a4d2e] rounded hover:bg-[#20a25b] disabled:opacity-50 transition-colors"
-        >
-          Next &gt;
-        </button>
+      <div className="w-full px-4 py-4 sm:px-6 sm:py-5 md:px-8 md:py-10 lg:py-8">
+       
+        <div className="flex flex-col mb-40 md:mb-50 lg:mb-2 sm:flex-row justify-center items-center gap-3 sm:gap-4 md:gap-6 text-white">
+         
+          <button
+            onClick={handlePrevious}
+            disabled={currentRoom === 1}
+            className="w-full sm:w-auto min-w-[120px] 
+                     px-4 py-2.5 sm:px-5 sm:py-3 md:px-6 md:py-3 
+                     text-sm sm:text-base md:text-lg font-semibold
+                     bg-[#1a4d2e] rounded-lg hover:bg-[#20a25b] 
+                     disabled:opacity-40 disabled:cursor-not-allowed 
+                     transition-all duration-200 shadow-lg hover:shadow-xl
+                     active:scale-95"
+          >
+  
+            &larr; Previous
+          </button>
+
+       
+          <span className="text-sm sm:text-base md:text-lg lg:text-xl font-bold whitespace-nowrap px-2">
+          
+            Room {currentRoom} of {totalRooms}
+          </span>
+
+        
+          <button
+            onClick={handleNext}
+            disabled={currentRoom === totalRooms}
+            className="w-full sm:w-auto min-w-[120px] 
+                     px-4 py-2.5 sm:px-5 sm:py-3 md:px-6 md:py-3 
+                     text-sm sm:text-base md:text-lg font-semibold
+                     bg-[#1a4d2e] rounded-lg hover:bg-[#20a25b] 
+                     disabled:opacity-40 disabled:cursor-not-allowed 
+                     transition-all duration-200 shadow-lg hover:shadow-xl
+                     active:scale-95"
+          >
+            Next &rarr;
+          </button>
+        </div>
+
+ 
+        <div className="hidden sm:flex justify-center mt-3 md:mt-4">
+       
+          <p className="text-white/60 text-xs sm:text-sm md:text-base">
+            Viewing {currentArtworks.length} of {artworks.length} artworks
+          </p>
+        </div>
       </div>
     </div>
   );

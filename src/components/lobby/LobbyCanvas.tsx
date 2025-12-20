@@ -12,7 +12,11 @@ export default function LobbyCanvas() {
       <Canvas
         camera={{ position: [0, 0, 5], fov: 60 }}
         gl={{ alpha: true, antialias: true }}
+        style={{ background: 'transparent' }}
       >
+        {/* Set scene background to dark/transparent */}
+        <color attach="background" args={['#0a1f1a']} />
+        
         {/* Lighting */}
         <ambientLight intensity={0.4} />
         <pointLight position={[10, 10, 10]} intensity={0.8} />
@@ -31,7 +35,7 @@ export default function LobbyCanvas() {
           depth={50}
           count={3000}
           factor={4}
-          saturation={50}
+          saturation={0}
           fade
           speed={0.5}
         />
@@ -44,11 +48,11 @@ export default function LobbyCanvas() {
         <OrbitControls
           enableZoom={false}
           enablePan={false}
-          autoRotate={false}           // REMOVED auto-rotation
-          maxPolarAngle={Math.PI / 2}  // Lock vertical angle
-          minPolarAngle={Math.PI / 2}  // Lock vertical angle
-          minAzimuthAngle={0}          // Lock horizontal at center
-          maxAzimuthAngle={0}          // Lock horizontal at center
+          autoRotate={false}
+          maxPolarAngle={Math.PI / 2}
+          minPolarAngle={Math.PI / 2}
+          minAzimuthAngle={0}
+          maxAzimuthAngle={0}
         />
       </Canvas>
 

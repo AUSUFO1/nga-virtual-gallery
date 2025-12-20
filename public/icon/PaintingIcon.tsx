@@ -1,5 +1,6 @@
 import * as React from "react";
-const PaintingIcon = (props) => (
+
+const PaintingIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
     <rect width={256} height={256} fill="none" />
     <path
@@ -16,4 +17,5 @@ const PaintingIcon = (props) => (
     <circle cx={172} cy={100} r={12} />
   </svg>
 );
+
 export default PaintingIcon;

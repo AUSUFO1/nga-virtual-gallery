@@ -1,5 +1,6 @@
 import * as React from "react";
-const PhotographyIcon = (props) => (
+
+const PhotographyIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
     <rect width={256} height={256} fill="none" />
     <path
@@ -22,4 +23,5 @@ const PhotographyIcon = (props) => (
     />
   </svg>
 );
+
 export default PhotographyIcon;

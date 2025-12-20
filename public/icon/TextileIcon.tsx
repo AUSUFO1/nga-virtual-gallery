@@ -1,5 +1,6 @@
 import * as React from "react";
-const TextileIcon = (props) => (
+
+const TextileIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
     <rect width={256} height={256} fill="none" />
     <circle
@@ -57,4 +58,5 @@ const TextileIcon = (props) => (
     />
   </svg>
 );
+
 export default TextileIcon;

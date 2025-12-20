@@ -144,7 +144,7 @@ export default function GalleryCanvas({
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
-          minDistance={2}
+          minDistance={1}
           maxDistance={device === 'mobile' ? 8 : 10}
           maxPolarAngle={Math.PI / 2}
           target={[0, 1.6, 0]}
