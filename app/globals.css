@@ -23,10 +23,23 @@ html {
 
 body {
   background-color: var(--nga-navy);
-  color: white;
   font-family: var(--font-poppins), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body > *:not(input):not(textarea):not(select) {
+  color: white;
+}
+
+input, textarea, select {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
 }
 
 h1, h2, h3, h4, h5, h6 {

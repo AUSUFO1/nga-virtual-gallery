@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { imageLimiter, getClientIp } from '@/lib/rate-limit';
 
 const r2 = new S3Client({
   region: 'auto',
@@ -15,8 +16,26 @@ const r2 = new S3Client({
  * 
  * Proxies image from Cloudflare R2 to avoid CORS issues
  * Returns actual image bytes with proper headers
+ * 
+ * RATE LIMITED: 100 requests/hour per IP
  */
 export async function GET(request: NextRequest) {
+  // RATE LIMIT CHECK
+  const ip = getClientIp(request);
+  const rateLimitResult = await imageLimiter.check(100, ip);
+
+  if (!rateLimitResult.success) {
+    return new Response('Rate limit exceeded. Please try again later.', {
+      status: 429,
+      headers: {
+        'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+        'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+        'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
+        'Retry-After': Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
+      },
+    });
+  }
+
   const searchParams = request.nextUrl.searchParams;
   const artworkId = searchParams.get('id');
 
@@ -56,7 +75,7 @@ export async function GET(request: NextRequest) {
       offset += chunk.length;
     }
 
-    // Return image with proper headers
+    // Return image with proper headers including rate limit info
     return new Response(imageBuffer, {
       headers: {
         'Content-Type': 'image/jpeg',
@@ -64,6 +83,9 @@ export async function GET(request: NextRequest) {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, HEAD',
         'Access-Control-Allow-Headers': '*',
+        'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+        'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+        'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
       },
     });
 

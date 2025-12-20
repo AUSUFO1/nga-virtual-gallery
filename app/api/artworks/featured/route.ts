@@ -1,50 +1,59 @@
-// app/api/artworks/featured/route.ts
-
 import { NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { signedUrlLimiter, adminLimiter, getClientIp } from '@/lib/rate-limit';
 
 // Initialize Supabase client with SERVICE KEY for admin operations
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY! // Changed from ANON_KEY for POST operations
+  process.env.SUPABASE_SERVICE_KEY!
 );
 
 /*
  * GET /api/artworks/featured
- * 
- * Returns EXACTLY 10 most recent featured artworks for homepage
+ 
+ * Public endpoint - Returns 12 most recent featured artworks
  * Includes metadata but NOT image URLs (fetched separately for security)
  * 
- * Example response:
- * [
- *   {
- *     "id": "artwork-001",
- *     "title": "Tutu",
- *     "artist": "Ben Enwonwu",
- *     "year": 1974,
- *     "medium": "Oil on canvas",
- *     "description": "...",
- *     "imageId": "artwork-001"
- *   },
- *   ...
- * ]
+ * RATE LIMITED: 200 requests/hour per IP
  */
 export async function GET(request: NextRequest) {
   try {
-    // Fetch featured artworks from database (max 10)
+    // RATE LIMIT CHECK
+    const ip = getClientIp(request);
+    const rateLimitResult = await signedUrlLimiter.check(200, ip);
+
+    if (!rateLimitResult.success) {
+      return Response.json(
+        { 
+          error: 'Rate limit exceeded',
+          retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000)
+        },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
+            'Retry-After': Math.ceil((rateLimitResult.reset - Date.now()) / 1000).toString(),
+          },
+        }
+      );
+    }
+
     const { data, error } = await supabase
       .from('artworks')
       .select('*')
       .eq('is_featured', true)
       .order('created_at', { ascending: false })
-      .limit(12); // Changed from 9 to 10
+      .limit(12);
 
     if (error) {
-      console.error('Supabase error:', error);
+      console.error('Supabase GET error:', error);
       throw error;
     }
 
-    // Format response
     const artworks = data?.map(artwork => ({
       id: artwork.id,
       title: artwork.title,
@@ -61,9 +70,14 @@ export async function GET(request: NextRequest) {
     return Response.json(artworks, {
       headers: {
         'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
-      }
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+        'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+        'X-RateLimit-Reset': new Date(rateLimitResult.reset).toISOString(),
+      },
     });
-
   } catch (error) {
     console.error('Error fetching featured artworks:', error);
     return Response.json(
@@ -76,15 +90,49 @@ export async function GET(request: NextRequest) {
 /*
  * POST /api/artworks/featured
  * 
- * Maintenance endpoint - Keeps only 10 most recent featured artworks
- * Automatically un-features artworks beyond the 10 limit
- * Called after adding new featured artwork
+ * Admin-only maintenance endpoint - Keeps only 12 most recent featured artworks
+ * Un-features artworks beyond the 12 limit
+ * 
+ * RATE LIMITED: 50 requests/hour per IP
  */
 export async function POST(request: NextRequest) {
   try {
+    // SECURITY CHECK - Must be authenticated admin
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user) {
+      return Response.json(
+        { error: 'Unauthorized - Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    // Check admin role
+    if ((session.user as any).role !== 'ADMIN') {
+      return Response.json(
+        { error: 'Forbidden - Admin access required' },
+        { status: 403 }
+      );
+    }
+
+    // RATE LIMIT CHECK (even for admins - prevent mistakes/abuse)
+    const ip = getClientIp(request);
+    const rateLimitResult = await adminLimiter.check(50, ip);
+
+    if (!rateLimitResult.success) {
+      return Response.json(
+        { 
+          error: 'Rate limit exceeded. Too many maintenance operations.',
+          retryAfter: Math.ceil((rateLimitResult.reset - Date.now()) / 1000)
+        },
+        { status: 429 }
+      );
+    }
+
+    console.log('Admin authenticated:', session.user.email);
     console.log('Checking featured artworks limit...');
 
-    // Get all featured artworks, newest first
+    // Get all featured artworks
     const { data: allFeatured, error: fetchError } = await supabase
       .from('artworks')
       .select('id, created_at, title')
@@ -94,18 +142,16 @@ export async function POST(request: NextRequest) {
     if (fetchError) throw fetchError;
 
     const currentCount = allFeatured?.length || 0;
-    console.log(`Current featured count: ${currentCount}`);
 
-    // If more than 10, un-feature the oldest ones
     if (allFeatured && currentCount > 12) {
-      const toUnfeature = allFeatured.slice(10); // Get everything after first 10
+      const toUnfeature = allFeatured.slice(12);
       const idsToUnfeature = toUnfeature.map(art => art.id);
 
-      console.log(`Un-featuring ${idsToUnfeature.length} old artworks:`, 
+      console.log(
+        `Un-featuring ${idsToUnfeature.length} old artworks:`,
         toUnfeature.map(a => a.title)
       );
 
-      // Un-feature old artworks
       const { error: updateError } = await supabase
         .from('artworks')
         .update({ is_featured: false })
@@ -113,32 +159,42 @@ export async function POST(request: NextRequest) {
 
       if (updateError) throw updateError;
 
-      console.log(`Successfully maintained 10-featured limit`);
+      console.log(' Successfully maintained 12-featured limit');
 
-      return Response.json({ 
-        success: true, 
-        message: `Un-featured ${idsToUnfeature.length} old artworks to maintain 10 limit`,
-        unfeatured: toUnfeature.map(a => ({ id: a.id, title: a.title }))
+      return Response.json({
+        success: true,
+        message: `Un-featured ${idsToUnfeature.length} old artworks`,
+        unfeatured: toUnfeature.map(a => ({ id: a.id, title: a.title })),
       });
     }
 
-    console.log('Featured count within limit (10 or less)');
+    console.log('Featured count within limit (12 or less)');
 
-    return Response.json({ 
-      success: true, 
+    return Response.json({
+      success: true,
       message: 'Featured artworks within limit',
-      currentCount 
+      currentCount,
     });
-
   } catch (error: any) {
-    console.error('Error maintaining featured limit:', error);
+    console.error(' Error maintaining featured limit:', error);
     return Response.json(
-      { 
+      {
         success: false,
         error: 'Failed to maintain featured limit',
-        details: error.message 
+        details: error.message,
       },
       { status: 500 }
     );
   }
+}
+
+// Handle OPTIONS for CORS preflight
+export async function OPTIONS() {
+  return new Response(null, {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
 }

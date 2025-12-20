@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { createClient } from '@supabase/supabase-js';
 
@@ -7,7 +7,8 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY! // server only
 );
 
-const handler = NextAuth({
+// EXPORT THIS - needed for getServerSession in other routes
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Admin Login',
@@ -96,6 +97,7 @@ const handler = NextAuth({
   pages: {
     signIn: '/admin/login',
   },
-});
+};
 
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
