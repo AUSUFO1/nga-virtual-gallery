@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, Suspense } from 'react';
 import { Text, useTexture } from '@react-three/drei';
+import * as THREE from 'three';
 
 interface Artwork {
   id: string;
@@ -17,6 +18,27 @@ interface ArtworkFrame3DProps {
   rotation: [number, number, number];
   onClick: () => void;
   device: string;
+}
+
+// Separate component for texture loading
+function ArtworkTexture({ imageUrl }: { imageUrl: string }) {
+  const texture = useTexture(imageUrl);
+  
+  // Optimize texture settings
+  useMemo(() => {
+    if (texture) {
+      texture.minFilter = THREE.LinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.generateMipmaps = false;
+    }
+  }, [texture]);
+  
+  return <meshStandardMaterial map={texture} />;
+}
+
+// Fallback material when no image
+function FallbackMaterial() {
+  return <meshStandardMaterial color="#2a2a2a" />;
 }
 
 export default function ArtworkFrame3D({
@@ -92,13 +114,18 @@ export default function ArtworkFrame3D({
         }}
       >
         <planeGeometry args={artSize} />
-        <meshStandardMaterial
-          map={imageUrl ? useTexture(imageUrl) : undefined}
-          color={imageUrl ? '#ffffff' : '#2a2a2a'}
-        />
+        {/* Properly handle texture loading with Suspense */}
+        <Suspense fallback={<FallbackMaterial />}>
+          {imageUrl ? (
+            <ArtworkTexture imageUrl={imageUrl} />
+          ) : (
+            <FallbackMaterial />
+          )}
+        </Suspense>
       </mesh>
 
-      {/* ================= LABEL ================= */}
+      {/* TEMPORARILY DISABLED - Text component causes CSP worker issues */}
+      {/* 
       {device !== 'mobile' && (
         <Text
           position={[0, -(artSize[1] / 2 + 0.35), 0.02]}
@@ -115,6 +142,7 @@ export default function ArtworkFrame3D({
           </Text>
         </Text>
       )}
+      */}
     </group>
   );
 }

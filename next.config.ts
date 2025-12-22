@@ -14,7 +14,30 @@ const baseSecurityHeaders = [
   },
 ];
 
-/*
+/**
+ * Relaxed CSP for 3D Gallery (allows Web Workers)
+ * CRITICAL: Three.js Text component requires blob: workers
+ */
+const gallerySecurityHeaders = [
+  ...baseSecurityHeaders,
+  {
+    key: "Content-Security-Policy",
+    value: [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:", // Allow blob for workers
+      "worker-src 'self' blob:", // CRITICAL: Allow Web Workers
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob: https:",
+      "font-src 'self' data:",
+      "connect-src 'self' https://*.r2.cloudflarestorage.com https:",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join("; "),
+  },
+];
+
+/**
  * Full CSP + security headers
  * (DO NOT APPLY TO 3D GALLERY)
  */
@@ -43,22 +66,23 @@ const nextConfig: NextConfig = {
 
   async headers() {
     return [
-      /*
-       * SECURITY FOR ALL NORMAL PAGES
-       * Applies CSP everywhere EXCEPT gallery dynamic routes
+      /**
+       * RELAXED SECURITY FOR ALL GALLERY ROUTES
+       * Matches /gallery and /gallery/any-category
+       * MUST come FIRST to take precedence
+       */
+      {
+        source: "/gallery/:path*",
+        headers: gallerySecurityHeaders,
+      },
+
+      /**
+       * SECURITY FOR ALL OTHER PAGES
+       * Applies strict CSP everywhere except gallery
        */
       {
         source: "/((?!gallery).*)",
         headers: fullSecurityHeaders,
-      },
-
-      /*
-       * MINIMAL SECURITY FOR ALL DYNAMIC GALLERY ROUTES
-       * This matches /gallery/any-category
-       */
-      {
-        source: "/gallery/(.*)",
-        headers: baseSecurityHeaders,
       },
     ];
   },

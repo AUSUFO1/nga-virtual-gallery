@@ -25,7 +25,7 @@ interface GalleryRoom3DProps {
 export default function GalleryRoom3D({
   category,
   categoryLabel,
-  artworksPerRoom = 15, // 🎯 ADJUST: Default artworks per room
+  artworksPerRoom = 15,
 }: GalleryRoom3DProps) {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [artworkUrls, setArtworkUrls] = useState<Record<string, string>>({});
@@ -36,7 +36,6 @@ export default function GalleryRoom3D({
   const [error, setError] = useState<string | null>(null);
   const device = useDeviceType();
 
-  // Fetch artworks for this category
   useEffect(() => {
     async function loadGallery() {
       try {
@@ -49,33 +48,48 @@ export default function GalleryRoom3D({
         const data = await res.json();
         const fetchedArtworks: Artwork[] = data.artworks || [];
 
-        // ADJUST: Maximum artworks per device type
         const maxArtworks = device === 'mobile' ? 30 : device === 'tablet' ? 50 : 100;
         const limitedArtworks = fetchedArtworks.slice(0, maxArtworks);
 
         setArtworks(limitedArtworks);
 
-        // Proxy URLs for 3D textures and signed URLs
+        // Generate proxy URLs immediately
         const urls: Record<string, string> = {};
-        const signedUrls: Record<string, string> = {};
-
-        for (const art of limitedArtworks) {
+        limitedArtworks.forEach(art => {
           urls[art.imageId] = `/api/artwork/image?id=${art.imageId}`;
+        });
+        setArtworkUrls(urls);
+
+        // Fetch signed URLs in parallel
+        const signedUrlPromises = limitedArtworks.map(async (art) => {
           try {
             const signedRes = await fetch(`/api/artwork?id=${art.imageId}`);
             if (signedRes.ok) {
               const signedData = await signedRes.json();
-              signedUrls[art.imageId] = signedData.url;
+              return { imageId: art.imageId, url: signedData.url };
             }
           } catch (err) {
-            console.error(`Failed to fetch signed URL for ${art.imageId}`, err);
+            console.warn(`Failed to fetch signed URL for ${art.imageId}`, err);
           }
-        }
+          return null;
+        });
 
-        setArtworkUrls(urls);
+        const signedResults = await Promise.all(signedUrlPromises);
+        
+        const signedUrls: Record<string, string> = {};
+        signedResults.forEach(result => {
+          if (result) {
+            signedUrls[result.imageId] = result.url;
+          }
+        });
+
         setArtworkSignedUrls(signedUrls);
+        
+        // Ensure state propagates before showing canvas
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
         setIsLoading(false);
-        setCurrentRoom(1); // reset to room 1 on category change
+        setCurrentRoom(1);
       } catch (err: any) {
         console.error('Error loading gallery:', err);
         setError(err.message);
@@ -86,7 +100,6 @@ export default function GalleryRoom3D({
     loadGallery();
   }, [category, device]);
 
-  // Pagination logic
   const totalRooms = Math.ceil(artworks.length / artworksPerRoom);
   const currentArtworks = artworks.slice(
     (currentRoom - 1) * artworksPerRoom,
@@ -101,13 +114,13 @@ export default function GalleryRoom3D({
     if (currentRoom > 1) setCurrentRoom(currentRoom - 1);
   };
 
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-linear-to-b from-[#20a25b] to-[#1a4d2e] flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-16 h-16 text-[#a8cf45] animate-spin mx-auto mb-4" />
           <p className="text-white text-xl">Loading {categoryLabel}...</p>
+          <p className="text-[#a8cf45] text-sm mt-2">Preparing artworks...</p>
         </div>
       </div>
     );
@@ -130,7 +143,6 @@ export default function GalleryRoom3D({
     );
   }
 
- 
   if (artworks.length === 0) {
     return (
       <div className="min-h-screen bg-linear-to-b from-[#20a25b] to-[#1a4d2e] flex items-center justify-center px-4">
@@ -150,12 +162,12 @@ export default function GalleryRoom3D({
 
   return (
     <div className="relative w-full h-screen bg-linear-to-b from-[#20a25b] to-[#1a4d2e] flex flex-col">
-
       <div className="px-6 mt-10 py-6 sm:px-6 sm:py-5 md:px-8 md:py-6 lg:py-8 text-white text-sm sm:text-base md:text-lg lg:text-xl font-bold text-center">
-        
-       Room {currentRoom} of {totalRooms}
+        Room {currentRoom} of {totalRooms}
       </div>
+
       <GalleryCanvas
+        key={`room-${currentRoom}`}
         artworks={currentArtworks}
         artworkUrls={artworkUrls}
         device={device}
@@ -171,9 +183,7 @@ export default function GalleryRoom3D({
       />
 
       <div className="w-full px-4 py-4 sm:px-6 sm:py-5 md:px-8 md:py-10 lg:py-8">
-       
         <div className="flex flex-col mb-40 md:mb-50 lg:mb-2 sm:flex-row justify-center items-center gap-3 sm:gap-4 md:gap-6 text-white">
-         
           <button
             onClick={handlePrevious}
             disabled={currentRoom === 1}
@@ -185,17 +195,13 @@ export default function GalleryRoom3D({
                      transition-all duration-200 shadow-lg hover:shadow-xl
                      active:scale-95"
           >
-  
             &larr; Previous
           </button>
 
-       
           <span className="text-sm sm:text-base md:text-lg lg:text-xl font-bold whitespace-nowrap px-2">
-          
             Room {currentRoom} of {totalRooms}
           </span>
 
-        
           <button
             onClick={handleNext}
             disabled={currentRoom === totalRooms}
@@ -211,9 +217,7 @@ export default function GalleryRoom3D({
           </button>
         </div>
 
- 
         <div className="hidden sm:flex justify-center mt-3 md:mt-4">
-       
           <p className="text-white/60 text-xs sm:text-sm md:text-base">
             Viewing {currentArtworks.length} of {artworks.length} artworks
           </p>
