@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Filter, Paintbrush, Image, Box, Camera, Scissors, Layers, Sparkle, Archive } from 'lucide-react';
+import { Filter, Paintbrush, Image, Box, Camera, Scissors, Layers } from 'lucide-react';
 
 export const CATEGORIES = [
   { id: 'all', label: 'All Artworks', icon: Paintbrush },
@@ -21,7 +21,7 @@ interface CategoryFiltersProps {
 /**
  * CategoryFilters Component
  * 
- * Horizontal scrollable category buttons
+ * Sleek horizontal category buttons with NGA branding
  */
 export default function CategoryFilters({
   selectedCategory,
@@ -33,16 +33,18 @@ export default function CategoryFilters({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="mb-8"
+      className="mb-10"
     >
       {/* Section Title */}
-      <div className="flex items-center gap-3 mb-4">
-        <Filter className="w-5 h-5 text-nga-navy" />
-        <h2 className="text-xl font-bold text-nga-navy">Filter by Category</h2>
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-lg bg-nga-navy flex items-center justify-center">
+          <Filter className="w-5 h-5 text-nga-green" />
+        </div>
+        <h2 className="text-2xl font-bold text-nga-navy">Filter by Category</h2>
       </div>
 
       {/* Horizontal Scrollable Row */}
-      <div className="flex gap-3 overflow-x-auto scrollbar-hide py-2">
+      <div className="flex gap-4 overflow-x-auto scrollbar-hide py-3 px-1">
         {CATEGORIES.map((category, index) => {
           const count = categoryCounts[category.id] || 0;
           const isActive = selectedCategory === category.id;
@@ -64,7 +66,7 @@ export default function CategoryFilters({
 }
 
 /**
- * Individual Category Button
+ * Individual Sleek Category Button
  */
 function CategoryButton({
   category,
@@ -83,38 +85,75 @@ function CategoryButton({
 
   return (
     <motion.button
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3, delay: index * 0.05 }}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.08 }}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.96 }}
       onClick={onClick}
       className={`
-        flex flex-col items-center justify-center
-        min-w-[90px] px-3 py-2
-        rounded-xl transition-all duration-300 border-2
-        group
+        relative flex items-center gap-3
+        min-w-40 px-5 py-3.5
+        rounded-2xl transition-all duration-300
+        group overflow-hidden
         ${isActive
-          ? 'bg-nga-green border-nga-green shadow-lg shadow-nga-green/30'
-          : 'bg-nga-navy border-nga-green/20 hover:border-nga-green/50 hover:bg-nga-cream'}
+          ? 'bg-nga-navy shadow-xl shadow-nga-navy/30'
+          : 'bg-white border-2 border-nga-navy/10 hover:border-nga-green/50 hover:shadow-lg'}
       `}
     >
-      {/* Icon */}
-      <IconComponent className={`text-2xl mb-1 ${isActive ? 'text-nga-navy' : 'text-nga-cream group-hover:text-nga-navy'}`} />
+      {/* Animated Background Gradient (Active State) */}
+      {isActive && (
+        <motion.div
+          className="absolute inset-0 bg-linear-to-r from-nga-navy via-nga-green/20 to-nga-navy"
+          animate={{ x: ['-100%', '100%'] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+        />
+      )}
 
-      {/* Label */}
-      <div className={`text-sm font-bold ${isActive ? 'text-nga-navy' : 'text-nga-cream group-hover:text-nga-navy'}`}>
-        {category.label}
+      {/* Content Container */}
+      <div className="relative z-10 flex items-center gap-3 w-full">
+        {/* Icon Circle */}
+        <div className={`
+          flex items-center justify-center
+          w-10 h-10 rounded-xl
+          transition-all duration-300
+          ${isActive
+            ? 'bg-nga-green shadow-lg shadow-nga-green/30'
+            : 'bg-nga-navy/5 group-hover:bg-nga-green/20'}
+        `}>
+          <IconComponent className={`w-5 h-5 ${isActive ? 'text-nga-navy' : 'text-nga-navy group-hover:text-nga-green'}`} />
+        </div>
+
+        {/* Text Content */}
+        <div className="flex flex-col items-start flex-1">
+          {/* Label */}
+          <div className={`text-sm font-bold transition-colors ${isActive ? 'text-nga-cream' : 'text-nga-navy'}`}>
+            {category.label}
+          </div>
+
+          {/* Count Badge */}
+          <div className={`
+            text-xs font-semibold mt-0.5
+            ${isActive ? 'text-nga-green' : 'text-nga-navy/60 group-hover:text-nga-green'}
+          `}>
+            {count} {count === 1 ? 'item' : 'items'}
+          </div>
+        </div>
+
+        {/* Active Indicator Dot */}
+        {isActive && (
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="w-2 h-2 rounded-full bg-nga-green"
+          />
+        )}
       </div>
 
-      {/* Count Badge */}
-      <div
-        className={`text-xs font-bold mt-1 px-2 py-0.5 rounded-full
-          ${isActive ? 'bg-nga-navy text-nga-green' : 'bg-nga-green/20 text-nga-green group-hover:bg-nga-navy group-hover:text-nga-cream'}
-        `}
-      >
-        {count}
-      </div>
+      {/* Hover Glow Effect */}
+      {!isActive && (
+        <div className="absolute inset-0 bg-linear-to-r from-transparent via-nga-green/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      )}
     </motion.button>
   );
 }

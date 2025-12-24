@@ -15,10 +15,10 @@ export default function CollectionsHeader() {
       className="text-center mb-12"
     >
       <h1 className="text-3xl md:text-4xl font-bold text-nga-navy mb-4">
-        Our <span className="text-nga-green">Collections</span>
+        National <span className="text-nga-green">Collections</span>
       </h1>
       <p className="text-black text-lg max-w-2xl mx-auto">
-        Explore our complete gallery of Nigerian artworks across various categories and mediums
+        Explore our gallery of Nigerian artworks across various categories and mediums
       </p>
     </motion.div>
   );

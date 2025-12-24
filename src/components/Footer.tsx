@@ -1,15 +1,22 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-nga-navy text-nga-cream pt-16 pb-8">
-      <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+    <footer className="relative bg-nga-navy text-nga-cream pt-20 pb-6 overflow-hidden">
+      {/* Subtle Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-nga-green rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-nga-light-green rounded-full blur-3xl" />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+        {/* Main Footer Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-12">
 
           {/* ABOUT */}
           <motion.div
@@ -17,14 +24,36 @@ export default function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
+            className="sm:col-span-2 lg:col-span-1"
           >
-            <h3 className="text-xl md:text-lg font-bold mb-4 text-nga-cream">
+            <h3 className="text-2xl font-bold mb-4 text-nga-cream">
               National Gallery of Art
             </h3>
-            <p className="text-nga-cream/70 text-sm leading-relaxed mb-4">
+            <p className="text-nga-cream/80 text-sm sm:text-base leading-relaxed mb-6">
               Nigeria's premier institution for preserving, promoting, and showcasing
               the nation's artistic heritage and cultural treasures.
             </p>
+
+            {/* Social Media Icons */}
+            <div className="flex gap-3">
+              {[
+                { icon: Facebook, href: '#', label: 'Facebook' },
+                { icon: Twitter, href: '#', label: 'Twitter' },
+                { icon: Instagram, href: '#', label: 'Instagram' },
+                { icon: Youtube, href: '#', label: 'YouTube' },
+              ].map((social, i) => (
+                <motion.a
+                  key={i}
+                  href={social.href}
+                  aria-label={social.label}
+                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-10 h-10 rounded-full bg-nga-green/20 hover:bg-nga-green flex items-center justify-center transition-all duration-300 group"
+                >
+                  <social.icon className="w-5 h-5 text-nga-cream group-hover:text-nga-navy transition-colors" />
+                </motion.a>
+              ))}
+            </div>
           </motion.div>
 
           {/* QUICK LINKS */}
@@ -34,8 +63,10 @@ export default function Footer() {
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-lg font-semibold mb-4 text-nga-cream">Quick Links</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="text-lg font-bold mb-4 text-nga-cream border-b-2 border-nga-green/30 pb-2 inline-block">
+              Quick Links
+            </h4>
+            <ul className="space-y-3 text-sm sm:text-base mt-4">
               {[
                 { label: "Virtual Gallery", href: "/gallery" },
                 { label: "Collections", href: "/collections" },
@@ -46,8 +77,9 @@ export default function Footer() {
                 <li key={i}>
                   <a
                     href={item.href}
-                    className="text-nga-cream/70 hover:text-nga-green transition-colors"
+                    className="text-nga-cream/80 hover:text-nga-green transition-colors inline-flex items-center gap-2 group"
                   >
+                    <span className="w-0 h-0.5 bg-nga-green group-hover:w-4 transition-all duration-300" />
                     {item.label}
                   </a>
                 </li>
@@ -62,50 +94,65 @@ export default function Footer() {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-lg font-semibold mb-4 text-nga-cream">Contact</h4>
+            <h4 className="text-lg font-bold mb-4 text-nga-cream border-b-2 border-nga-green/30 pb-2 inline-block">
+              Contact
+            </h4>
 
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-nga-green mt-1 shrink-0" />
-                <span className="text-nga-cream/70">
+            <ul className="space-y-4 text-sm sm:text-base mt-4">
+              <li className="flex items-start gap-3 group">
+                <div className="w-8 h-8 rounded-lg bg-nga-green/20 flex items-center justify-center shrink-0 group-hover:bg-nga-green transition-colors">
+                  <MapPin className="w-4 h-4 text-nga-green group-hover:text-nga-navy transition-colors" />
+                </div>
+                <span className="text-nga-cream/80">
                   Federal Secretariat Complex, Phase II, Shehu Shagari Way, Abuja, FCT.
                 </span>
               </li>
 
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-nga-green shrink-0" />
-                <span className="text-nga-cream/70">+234 (80) 231 701 78</span>
+              <li className="flex items-center gap-3 group">
+                <div className="w-8 h-8 rounded-lg bg-nga-green/20 flex items-center justify-center shrink-0 group-hover:bg-nga-green transition-colors">
+                  <Phone className="w-4 h-4 text-nga-green group-hover:text-nga-navy transition-colors" />
+                </div>
+                <a href="tel:+2348023170178" className="text-nga-cream/80 hover:text-nga-green transition-colors">
+                  +234 (80) 231 701 78
+                </a>
               </li>
 
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-nga-green shrink-0" />
-                <span className="text-nga-cream/70">info@nga.gov.ng</span>
+              <li className="flex items-center gap-3 group">
+                <div className="w-8 h-8 rounded-lg bg-nga-green/20 flex items-center justify-center shrink-0 group-hover:bg-nga-green transition-colors">
+                  <Mail className="w-4 h-4 text-nga-green group-hover:text-nga-navy transition-colors" />
+                </div>
+                <a href="mailto:info@nga.gov.ng" className="text-nga-cream/80 hover:text-nga-green transition-colors">
+                  info@nga.gov.ng
+                </a>
               </li>
             </ul>
           </motion.div>
 
+          {/* OPENING HOURS */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             viewport={{ once: true }}
           >
-            <h4 className="text-lg font-semibold mb-4 text-nga-cream">Opening Hours</h4>
+            <h4 className="text-lg font-bold mb-4 text-nga-cream border-b-2 border-nga-green/30 pb-2 inline-block">
+              Opening Hours
+            </h4>
 
-            <ul className="space-y-2 text-sm text-nga-cream/70">
-              <li className="flex justify-between">
+            <ul className="space-y-3 text-sm sm:text-base text-nga-cream/80 mt-4">
+              <li className="flex justify-between items-center p-2 rounded-lg hover:bg-nga-green/10 transition-colors">
                 <span>Monday - Friday:</span>
-                <span className="font-semibold text-nga-cream">9:00 AM - 5:00 PM</span>
+                <span className="font-bold text-nga-cream">9:00 AM - 5:00 PM</span>
               </li>
 
-              <li className="flex justify-between">
+              <li className="flex justify-between items-center p-2 rounded-lg hover:bg-nga-green/10 transition-colors">
                 <span>Saturday - Sunday:</span>
-                <span className="font-semibold text-nga-cream">Closed</span>
+                <span className="font-bold text-nga-cream">Closed</span>
               </li>
 
-              <li className="mt-4 pt-4 border-t border-nga-cream/20">
-                <span className="font-semibold text-nga-cream">Virtual Gallery:</span><br />
-                <span className="text-nga-cream">Open 24/7</span>
+              <li className="mt-4 pt-4 border-t border-nga-cream/20 p-3 rounded-lg bg-nga-green/10">
+                <span className="font-bold text-nga-green block mb-1">Virtual Gallery</span>
+                <span className="text-nga-cream">Open 24/7 for exploration</span>
               </li>
             </ul>
           </motion.div>
@@ -113,18 +160,30 @@ export default function Footer() {
 
         {/* BOTTOM BAR */}
         <div className="border-t border-nga-cream/20 pt-8 mt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-nga-cream/70">
-            <p>© {currentYear} National Gallery of Art, Nigeria. All rights reserved.</p>
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-nga-cream/80">
+            <p className="text-center sm:text-left">
+              © {currentYear} National Gallery of Art, Nigeria. All rights reserved.
+            </p>
 
-            <div className="flex gap-6">
-              <a href="/privacy" className="hover:text-nga-green transition-colors">Privacy Policy</a>
-              <a href="/accessibility" className="hover:text-nga-green transition-colors">Accessibility</a>
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+              <a href="/privacy" className="hover:text-nga-green transition-colors">
+                Privacy Policy
+              </a>
+              <span className="text-nga-cream/40">•</span>
+              <a href="#terms" className="hover:text-nga-green transition-colors">
+                Terms of Use
+              </a>
+              <span className="text-nga-cream/40">•</span>
+              <a href="/accessibility" className="hover:text-nga-green transition-colors">
+                Accessibility
+              </a>
             </div>
           </div>
 
-          <p className="text-center mt-4 text-xs text-nga-cream/60">
-            Developed by Abubakar Yusuf Onoruoiza | NYSC 2024
-          </p>
+          {/* Credit */}
+          <div className="text-center mt-6 text-xs text-nga-cream/50">
+            <p>Designed for Nigerian Art & Culture</p>
+          </div>
         </div>
       </div>
     </footer>
