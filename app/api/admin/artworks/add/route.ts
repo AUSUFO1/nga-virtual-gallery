@@ -6,7 +6,6 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { adminLimiter, getClientIp } from '@/lib/rate-limit';
 import sharp from 'sharp';
 
-// Cloudflare R2 client
 const r2 = new S3Client({
   region: 'auto',
   endpoint: `https://${process.env.CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -16,14 +15,12 @@ const r2 = new S3Client({
   },
 });
 
-// Supabase client (SERVICE ROLE)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_KEY!
 );
 
-// ✅ VALIDATION CONSTANTS
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const MAX_TITLE_LENGTH = 200;
 const MAX_ARTIST_LENGTH = 100;
 const MAX_MEDIUM_LENGTH = 100;
@@ -31,16 +28,13 @@ const MAX_DIMENSIONS_LENGTH = 50;
 const MAX_DESCRIPTION_LENGTH = 2000;
 const MAX_CATEGORY_LENGTH = 50;
 const MIN_YEAR = 1000;
-const MAX_YEAR = new Date().getFullYear() + 10; // Allow future dates for planned exhibits
+const MAX_YEAR = new Date().getFullYear() + 10;
 
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-const VALID_CATEGORIES = ['painting', 'sculpture', 'photography', 'digital', 'mixed-media', 'other'];
+const VALID_CATEGORIES = ['painting', 'sculpture', 'photography', 'mixed-media', 'textile', 'other'];
 
 export async function POST(request: NextRequest) {
   try {
-    /* 
-       ✅ STEP 1: AUTHORIZATION (ADMIN ONLY)
-    */
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
@@ -57,13 +51,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('✅ Admin authenticated:', session.user.email);
-
-    /* 
-       ✅ STEP 2: RATE LIMITING (Prevent accidental spam)
-    */
     const ip = getClientIp(request);
-    const rateLimitResult = await adminLimiter.check(50, ip); // 50 uploads/hour
+    const rateLimitResult = await adminLimiter.check(50, ip);
 
     if (!rateLimitResult.success) {
       return Response.json(
@@ -75,9 +64,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /* 
-       ✅ STEP 3: PARSE & VALIDATE INPUT
-    */
     const formData = await request.formData();
 
     const imageFile = formData.get('image') as File;
@@ -90,7 +76,6 @@ export async function POST(request: NextRequest) {
     const rawCategory = formData.get('category') as string;
     const isFeatured = formData.get('isFeatured') === 'true';
 
-    // ✅ Check required fields exist
     if (!imageFile || !rawTitle || !rawArtist || !rawYear || !rawMedium || !rawDescription || !rawCategory) {
       return Response.json(
         { error: 'Missing required fields' },
@@ -98,7 +83,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ Sanitize and validate text inputs
     const title = rawTitle.trim().slice(0, MAX_TITLE_LENGTH);
     const artist = rawArtist.trim().slice(0, MAX_ARTIST_LENGTH);
     const medium = rawMedium.trim().slice(0, MAX_MEDIUM_LENGTH);
@@ -106,7 +90,6 @@ export async function POST(request: NextRequest) {
     const description = rawDescription.trim().slice(0, MAX_DESCRIPTION_LENGTH);
     const category = rawCategory.trim().toLowerCase().slice(0, MAX_CATEGORY_LENGTH);
 
-    // ✅ Validate minimum lengths
     if (title.length < 3) {
       return Response.json(
         { error: 'Title must be at least 3 characters' },
@@ -121,14 +104,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (description.length < 10) {
-      return Response.json(
-        { error: 'Description must be at least 10 characters' },
-        { status: 400 }
-      );
-    }
-
-    // ✅ Validate year
     const year = parseInt(rawYear);
     if (isNaN(year) || year < MIN_YEAR || year > MAX_YEAR) {
       return Response.json(
@@ -137,7 +112,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ Validate category
     if (!VALID_CATEGORIES.includes(category)) {
       return Response.json(
         { 
@@ -148,11 +122,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    /* 
-       ✅ STEP 4: VALIDATE IMAGE FILE
-    */
-    
-    // Check file size BEFORE reading into memory
     if (imageFile.size > MAX_FILE_SIZE) {
       return Response.json(
         { 
@@ -164,7 +133,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check MIME type (first line of defense, easily spoofed)
     if (!ALLOWED_IMAGE_TYPES.includes(imageFile.type)) {
       return Response.json(
         { 
@@ -176,21 +144,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('📝 Validation passed, processing image...');
-    console.log(`   Title: ${title}`);
-    console.log(`   Artist: ${artist}`);
-    console.log(`   File size: ${(imageFile.size / 1024).toFixed(2)}KB`);
-
-    /* 
-       ✅ STEP 5: IMAGE PROCESSING & VALIDATION
-    */
     const artworkId = `artwork-${Date.now()}-${Math.random()
       .toString(36)
       .substring(2, 9)}`;
 
     const buffer = Buffer.from(await imageFile.arrayBuffer());
 
-    // ✅ Validate it's actually a valid image by processing it
     let processedImage: Buffer;
     try {
       processedImage = await sharp(buffer)
@@ -204,7 +163,6 @@ export async function POST(request: NextRequest) {
         })
         .toBuffer();
     } catch (sharpError: any) {
-      console.error('Image processing error:', sharpError);
       return Response.json(
         { 
           error: 'Invalid or corrupted image file',
@@ -214,7 +172,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ Verify image has valid dimensions
     const metadata = await sharp(processedImage).metadata();
     if (!metadata.width || !metadata.height) {
       return Response.json(
@@ -223,7 +180,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ Check minimum dimensions (prevent 1x1 pixel attacks)
     if (metadata.width < 100 || metadata.height < 100) {
       return Response.json(
         { 
@@ -234,11 +190,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`✅ Image validated: ${metadata.width}x${metadata.height}px`);
-
-    /* 
-       ✅ STEP 6: ADD WATERMARK
-    */
     const { width, height } = metadata;
 
     const watermarkSvg = Buffer.from(`
@@ -267,13 +218,6 @@ export async function POST(request: NextRequest) {
     const finalSize = (watermarkedImage.length / 1024).toFixed(2);
     const compressionRatio = ((1 - watermarkedImage.length / buffer.length) * 100).toFixed(1);
 
-    console.log(`✅ Image processed: ${finalSize}KB (${compressionRatio}% compression)`);
-
-    /* 
-       ✅ STEP 7: UPLOAD TO CLOUDFLARE R2
-    */
-    console.log('☁️  Uploading to Cloudflare R2...');
-
     try {
       await r2.send(
         new PutObjectCommand({
@@ -282,7 +226,7 @@ export async function POST(request: NextRequest) {
           Body: watermarkedImage,
           ContentType: 'image/jpeg',
           Metadata: {
-            title: title.substring(0, 100), // R2 metadata has limits
+            title: title.substring(0, 100),
             artist: artist.substring(0, 100),
             year: year.toString(),
             uploadedBy: session.user.email || 'unknown',
@@ -290,19 +234,11 @@ export async function POST(request: NextRequest) {
         })
       );
     } catch (r2Error: any) {
-      console.error('R2 upload error:', r2Error);
       return Response.json(
         { error: 'Failed to upload image to storage' },
         { status: 500 }
       );
     }
-
-    console.log('✅ Uploaded to R2');
-
-    /* 
-       ✅ STEP 8: SAVE METADATA TO DATABASE
-    */
-    console.log('💾 Saving metadata to database...');
 
     const { data: artwork, error: dbError } = await supabase
       .from('artworks')
@@ -323,19 +259,9 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (dbError) {
-      console.error('Database error:', dbError);
-      
-      // Try to clean up R2 upload if database fails
-      // (Optional: implement cleanup logic here)
-      
       throw dbError;
     }
 
-    console.log('✅ Artwork added successfully!');
-
-    /* 
-       ✅ STEP 9: SUCCESS RESPONSE
-    */
     return Response.json({
       success: true,
       artwork: {
@@ -362,9 +288,6 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('❌ Error adding artwork:', error);
-    
-    // ✅ Don't expose internal error details in production
     return Response.json(
       {
         error: 'Failed to add artwork',

@@ -1,31 +1,25 @@
 import type { NextConfig } from "next";
 
-/**
- * Base security headers (safe everywhere, including 3D)
- */
+// Base security headers applied to all routes
 const baseSecurityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
     key: "Permissions-Policy",
-    value:
-      "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
+    value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
   },
 ];
 
-/**
- * Relaxed CSP for 3D Gallery (allows Web Workers)
- * CRITICAL: Three.js Text component requires blob: workers
- */
+// Relaxed CSP for 3D Gallery - allows Web Workers for Three.js
 const gallerySecurityHeaders = [
   ...baseSecurityHeaders,
   {
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:", // Allow blob for workers
-      "worker-src 'self' blob:", // CRITICAL: Allow Web Workers
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:",
+      "worker-src 'self' blob:",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
@@ -37,10 +31,7 @@ const gallerySecurityHeaders = [
   },
 ];
 
-/**
- * Full CSP + security headers
- * (DO NOT APPLY TO 3D GALLERY)
- */
+// Strict CSP for standard pages
 const fullSecurityHeaders = [
   ...baseSecurityHeaders,
   {
@@ -61,27 +52,20 @@ const fullSecurityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // StrictMode OFF for Three.js / WASM stability
   reactStrictMode: false,
 
   async headers() {
     return [
-      /**
-       * RELAXED SECURITY FOR ALL GALLERY ROUTES
-       * Matches /gallery and /gallery/any-category
-       * MUST come FIRST to take precedence
-       */
       {
         source: "/gallery/:path*",
         headers: gallerySecurityHeaders,
       },
-
-      /**
-       * SECURITY FOR ALL OTHER PAGES
-       * Applies strict CSP everywhere except gallery
-       */
       {
-        source: "/((?!gallery).*)",
+        source: "/api/:path*",
+        headers: baseSecurityHeaders,
+      },
+      {
+        source: "/((?!gallery|api).*)",
         headers: fullSecurityHeaders,
       },
     ];

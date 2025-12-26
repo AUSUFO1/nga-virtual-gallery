@@ -22,10 +22,12 @@ export default function AdminPanel() {
   const [isUploading, setIsUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [uploadStats, setUploadStats] = useState<any>(null);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const handleImageChange = (file: File) => {
     setImageFile(file);
     setPreviewUrl(URL.createObjectURL(file));
+    setErrorMessage('');
   };
 
   const resetForm = () => {
@@ -41,14 +43,20 @@ export default function AdminPanel() {
     });
     setImageFile(null);
     setPreviewUrl(null);
+    setErrorMessage('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!imageFile) return alert("Please select an image");
+    
+    if (!imageFile) {
+      setErrorMessage("Please select an image");
+      return;
+    }
 
     setIsUploading(true);
     setSuccess(false);
+    setErrorMessage('');
 
     try {
       const formDataToSend = new FormData();
@@ -62,17 +70,22 @@ export default function AdminPanel() {
         body: formDataToSend
       });
 
-      if (!response.ok) throw new Error("Failed to upload");
-
       const result = await response.json();
+
+      if (!response.ok) {
+        const errorMsg = result.error || result.message || `Upload failed (${response.status})`;
+        throw new Error(errorMsg);
+      }
+
       setSuccess(true);
       setUploadStats(result.stats);
 
       resetForm();
       setTimeout(() => setSuccess(false), 5000);
-    } catch (err) {
-      console.error(err);
-      alert("Upload failed");
+      
+    } catch (err: any) {
+      const errorMsg = err.message || "Upload failed - unknown error";
+      setErrorMessage(errorMsg);
     } finally {
       setIsUploading(false);
     }
@@ -86,9 +99,14 @@ export default function AdminPanel() {
 
         {success && <SuccessMessage uploadStats={uploadStats} />}
 
+        {errorMessage && (
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500 rounded-lg">
+            <p className="text-red-500 font-medium">{errorMessage}</p>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="card space-y-6">
 
-          {/* IMAGE UPLOAD */}
           <ImageUpload
             previewUrl={previewUrl}
             onFileSelected={handleImageChange}
@@ -96,7 +114,6 @@ export default function AdminPanel() {
             isUploading={isUploading}
           />
 
-          {/* ARTWORK FORM FIELDS */}
           <ArtworkForm
             formData={formData}
             setFormData={setFormData}
