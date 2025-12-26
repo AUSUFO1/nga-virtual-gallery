@@ -29,16 +29,6 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         background: 'linear-gradient(135deg, #20a25b 0%, #1a8a4d 50%, #20a25b 100%)'
       }}
     >
-      {/* Animated background particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="particle particle-1"></div>
-        <div className="particle particle-2"></div>
-        <div className="particle particle-3"></div>
-        <div className="particle particle-4"></div>
-        <div className="particle particle-5"></div>
-        <div className="particle particle-6"></div>
-      </div>
-
       {/* Animated circles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="animated-circle circle-1"></div>
@@ -89,61 +79,6 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
 
       {/* Enhanced animations */}
       <style jsx>{`
-        /* Particle background animation */
-        .particle {
-          position: absolute;
-          border-radius: 50%;
-          background: rgba(168, 207, 69, 0.15);
-          animation: float linear infinite;
-        }
-        .particle-1 {
-          width: 120px;
-          height: 120px;
-          top: 10%;
-          left: 10%;
-          animation-duration: 25s;
-        }
-        .particle-2 {
-          width: 90px;
-          height: 90px;
-          top: 60%;
-          right: 15%;
-          animation-duration: 30s;
-          animation-delay: -5s;
-        }
-        .particle-3 {
-          width: 150px;
-          height: 150px;
-          bottom: 15%;
-          left: 20%;
-          animation-duration: 35s;
-          animation-delay: -10s;
-        }
-        .particle-4 {
-          width: 100px;
-          height: 100px;
-          top: 30%;
-          right: 25%;
-          animation-duration: 28s;
-          animation-delay: -15s;
-        }
-        .particle-5 {
-          width: 80px;
-          height: 80px;
-          top: 50%;
-          left: 40%;
-          animation-duration: 32s;
-          animation-delay: -8s;
-        }
-        .particle-6 {
-          width: 110px;
-          height: 110px;
-          bottom: 30%;
-          right: 35%;
-          animation-duration: 27s;
-          animation-delay: -12s;
-        }
-
         /* Animated circles */
         .animated-circle {
           position: absolute;
@@ -186,25 +121,6 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
           50% {
             transform: translate(-50%, -50%) scale(1.2);
             opacity: 0.1;
-          }
-        }
-
-        @keyframes float {
-          0%, 100% {
-            transform: translate(0, 0) scale(1);
-            opacity: 0.4;
-          }
-          25% {
-            transform: translate(40px, -40px) scale(1.2);
-            opacity: 0.6;
-          }
-          50% {
-            transform: translate(-30px, 30px) scale(0.9);
-            opacity: 0.5;
-          }
-          75% {
-            transform: translate(20px, 40px) scale(1.1);
-            opacity: 0.7;
           }
         }
 

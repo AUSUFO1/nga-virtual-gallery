@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 
 export type DeviceType = 'mobile' | 'tablet' | 'desktop';
 
-/**
- * Hook to detect device type for responsive rendering
- */
+/* Hook to detect device type for responsive rendering */
 export function useDeviceType(): DeviceType {
   const [device, setDevice] = useState<DeviceType>('desktop');
 

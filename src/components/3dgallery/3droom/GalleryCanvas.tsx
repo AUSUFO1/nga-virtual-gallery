@@ -84,6 +84,10 @@ export default function GalleryCanvas({
   const [canRender, setCanRender] = useState(false);
   const canvasKey = React.useRef(Math.random()).current;
 
+  // ADDED: Helper to check if device uses touch controls
+  const isTouchDevice = device === 'mobile' || device === 'tablet';
+  const isDesktop = device === 'desktop';
+
   useEffect(() => {
     setCanRender(false);
     
@@ -106,37 +110,45 @@ export default function GalleryCanvas({
   return (
     <Canvas
       key={canvasKey}
-      shadows={device === 'desktop'}
-      dpr={[1, device === 'desktop' ? 2 : 1]}
+      shadows={isDesktop}
+      dpr={[1, isTouchDevice ? 1.5 : 2]} // IMPROVED: Tablet gets mobile-like quality
       gl={{
-        antialias: device !== 'mobile',
-        powerPreference: device === 'mobile' ? 'low-power' : 'high-performance',
+        antialias: true,
+        powerPreference: isTouchDevice ? 'default' : 'high-performance', // CHANGED: Tablet uses default like mobile
         alpha: false,
         preserveDrawingBuffer: false,
         failIfMajorPerformanceCaveat: false,
+        stencil: false,
+        depth: true,
       }}
       camera={{
         position: [0, 1.6, 5],
-        fov: device === 'mobile' ? 60 : 75,
+        fov: device === 'mobile' ? 65 : device === 'tablet' ? 70 : 75, // ADDED: Tablet gets medium FOV (70°)
+        near: 0.1,
+        far: 100,
       }}
     >
       <Suspense fallback={null}>
-        <ambientLight intensity={0.6} />
+        {/* IMPROVED LIGHTING - More professional gallery lighting */}
+        <ambientLight intensity={0.5} />
         
+        {/* Main directional light from above - simulates ceiling lights */}
         <directionalLight 
           position={[10, 10, 5]} 
-          intensity={0.8} 
-          castShadow={device === 'desktop'}
+          intensity={0.9} 
+          castShadow={isDesktop}
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
         />
         
-        <pointLight position={[10, 10, 10]} intensity={0.4} color="#ffffff" />
-        <pointLight position={[-10, 10, -10]} intensity={0.3} color="#ffffff" />
-        <pointLight position={[0, 10, -10]} intensity={0.2} color="#f9faf8" />
+        {/* Accent lights to illuminate artworks */}
+        <pointLight position={[10, 10, 10]} intensity={0.5} color="#ffffff" />
+        <pointLight position={[-10, 10, -10]} intensity={0.4} color="#ffffff" />
+        <pointLight position={[0, 10, -10]} intensity={0.3} color="#f9faf8" />
         
+        {/* Hemisphere light for natural ambient feeling */}
         <hemisphereLight 
-          intensity={0.4} 
+          intensity={0.3} 
           color="#ffffff"
           groundColor="#1a4d2e" 
         />
@@ -161,14 +173,22 @@ export default function GalleryCanvas({
           );
         })}
 
+        {/* CAMERA CONTROL RESTRICTIONS - Device-specific for smooth experience */}
         <OrbitControls
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
           minDistance={1}
-          maxDistance={device === 'mobile' ? 8 : 10}
+          maxDistance={device === 'mobile' ? 8 : device === 'tablet' ? 9 : 10}
           maxPolarAngle={Math.PI / 2}
+          minPolarAngle={Math.PI / 4}
+          minAzimuthAngle={device === 'desktop' ? -Math.PI / 2.3 : -Math.PI / 2.3}
+          maxAzimuthAngle={device === 'desktop' ? Math.PI / 2.3 : Math.PI / 2.3}
           target={[0, 1.6, 0]}
+          enableDamping={true}
+          dampingFactor={isTouchDevice ? 0.08 : 0.05} // CHANGED: More damping for touch = smoother
+          rotateSpeed={isTouchDevice ? 0.6 : 1.0} // CHANGED: Slightly reduced touch rotation speed
+          panSpeed={isTouchDevice ? 0.6 : 1.0} // CHANGED: Slightly reduced touch pan speed
         />
       </Suspense>
     </Canvas>

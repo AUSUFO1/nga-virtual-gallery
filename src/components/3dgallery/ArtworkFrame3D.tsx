@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, Suspense } from 'react';
-import { Text, useTexture } from '@react-three/drei';
+import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 interface Artwork {
@@ -21,28 +21,41 @@ interface ArtworkFrame3DProps {
 }
 
 // Separate component for texture loading
-function ArtworkTexture({ imageUrl }: { imageUrl: string }) {
+function ArtworkTexture({ imageUrl, device }: { imageUrl: string; device: string }) {
   const texture = useTexture(imageUrl);
   
-  // Optimize texture settings
   useMemo(() => {
     if (texture) {
-      texture.minFilter = THREE.LinearFilter;
+      texture.minFilter = device === 'mobile' ? THREE.LinearFilter : THREE.LinearMipmapLinearFilter;
       texture.magFilter = THREE.LinearFilter;
-      texture.generateMipmaps = false;
+      texture.generateMipmaps = device !== 'mobile'; 
+      texture.anisotropy = device === 'mobile' ? 2 : 4; 
+      texture.needsUpdate = true; 
     }
-  }, [texture]);
+  }, [texture, device]);
   
-  return <meshStandardMaterial map={texture} />;
+  return (
+    <meshStandardMaterial 
+      map={texture}
+      toneMapped={false} 
+      polygonOffset={true} 
+      polygonOffsetFactor={-1} 
+    />
+  );
 }
 
 // Fallback material when no image
 function FallbackMaterial() {
-  return <meshStandardMaterial color="#2a2a2a" />;
+  return (
+    <meshStandardMaterial 
+      color="#2a2a2a"
+      polygonOffset={true} // ADDED: Consistent offset
+      polygonOffsetFactor={-1}
+    />
+  );
 }
 
 export default function ArtworkFrame3D({
-  artwork,
   imageUrl,
   position,
   rotation,
@@ -52,7 +65,7 @@ export default function ArtworkFrame3D({
   const [hovered, setHovered] = useState(false);
 
   const artSize: [number, number] =
-    device === 'mobile' ? [1, 1.3] : [1.5, 2];
+    device === 'mobile' ? [1.1, 1.4] : [1.5, 2]; // CHANGED: Slightly larger on mobile (was 1, 1.3)
 
   const FRAME_THICKNESS = 0.08;
   const FRAME_DEPTH = 0.05;
@@ -68,7 +81,13 @@ export default function ArtworkFrame3D({
           <boxGeometry
             args={[artSize[0] + FRAME_THICKNESS * 2, FRAME_THICKNESS, FRAME_DEPTH]}
           />
-          <meshStandardMaterial color={FRAME_COLOR} metalness={0.4} roughness={0.3} />
+          <meshStandardMaterial 
+            color={FRAME_COLOR} 
+            metalness={0.4} 
+            roughness={0.3}
+            polygonOffset={true} 
+            polygonOffsetFactor={1}
+          />
         </mesh>
 
         {/* Bottom */}
@@ -76,7 +95,13 @@ export default function ArtworkFrame3D({
           <boxGeometry
             args={[artSize[0] + FRAME_THICKNESS * 2, FRAME_THICKNESS, FRAME_DEPTH]}
           />
-          <meshStandardMaterial color={FRAME_COLOR} metalness={0.4} roughness={0.3} />
+          <meshStandardMaterial 
+            color={FRAME_COLOR} 
+            metalness={0.4} 
+            roughness={0.3}
+            polygonOffset={true} 
+            polygonOffsetFactor={1}
+          />
         </mesh>
 
         {/* Left */}
@@ -84,7 +109,13 @@ export default function ArtworkFrame3D({
           <boxGeometry
             args={[FRAME_THICKNESS, artSize[1], FRAME_DEPTH]}
           />
-          <meshStandardMaterial color={FRAME_COLOR} metalness={0.4} roughness={0.3} />
+          <meshStandardMaterial 
+            color={FRAME_COLOR} 
+            metalness={0.4} 
+            roughness={0.3}
+            polygonOffset={true} 
+            polygonOffsetFactor={1}
+          />
         </mesh>
 
         {/* Right */}
@@ -92,13 +123,18 @@ export default function ArtworkFrame3D({
           <boxGeometry
             args={[FRAME_THICKNESS, artSize[1], FRAME_DEPTH]}
           />
-          <meshStandardMaterial color={FRAME_COLOR} metalness={0.4} roughness={0.3} />
+          <meshStandardMaterial 
+            color={FRAME_COLOR} 
+            metalness={0.4} 
+            roughness={0.3}
+            polygonOffset={true} 
+            polygonOffsetFactor={1}
+          />
         </mesh>
       </group>
 
-      {/* ARTWORK */}
       <mesh
-        position={[0, 0, 0.02]}
+        position={[0, 0, 0.025]} 
         onClick={(e) => {
           e.stopPropagation();
           onClick();
@@ -117,7 +153,7 @@ export default function ArtworkFrame3D({
         {/* Properly handle texture loading with Suspense */}
         <Suspense fallback={<FallbackMaterial />}>
           {imageUrl ? (
-            <ArtworkTexture imageUrl={imageUrl} />
+            <ArtworkTexture imageUrl={imageUrl} device={device} />
           ) : (
             <FallbackMaterial />
           )}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion';
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Playfair_Display } from 'next/font/google';
 
@@ -13,7 +13,6 @@ const playfair = Playfair_Display({
   display: 'swap',
 });
 
-/* 🔢 Counter Animation (ADDED ONLY) */
 function AnimatedCounter({ value }: { value: number }) {
   const count = useMotionValue(0);
   const [display, setDisplay] = useState(0);
@@ -49,9 +48,8 @@ export default function Hero() {
     {
       parts: [
         { text: 'PROMOTING', className: 'text-nga-green' },
-        { text: 'NIGERIAN', className: 'text-nga-cream' },
-        { text: 'ART', className: 'text-nga-green' },
-        { text: '& ARTISTS', className: 'text-nga-cream' },
+        { text: 'ART', className: 'text-nga-cream' },
+        { text: '& ARTISTS', className: 'text-nga-green' },
       ],
     },
     {
@@ -156,7 +154,7 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Stats Bar (ONLY numbers animated) */}
+        {/* Stats Bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
