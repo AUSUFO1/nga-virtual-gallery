@@ -5,6 +5,7 @@ import Lobby3DBackground from '@/src/components/gallery/Lobby3DBackground';
 import RoomSelection from '@/src/components/gallery/RoomSelection';
 import LobbyHeader from '@/src/components/gallery/LobbyHeader';
 import LobbyFooter from '@/src/components/gallery/LobbyFooter';
+import DeviceNoticeSplash from '@/src/components/DeviceNoticeSplash';
 import PaintingIcon from '@/public/icon/PaintingIcon';
 import SculptureIcon from '@/public/icon/SculptureIcon';
 import PhotographyIcon from '@/public/icon/PhotographyIcon';
@@ -22,6 +23,26 @@ export const GALLERY_ROOMS = [
 export default function GalleryLobbyClient() {
   const [roomCounts, setRoomCounts] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [showDeviceNotice, setShowDeviceNotice] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true); // ADDED: Track if desktop
+
+  // ADDED: Device detection on mount
+  useEffect(() => {
+    const checkDevice = () => {
+      const width = window.innerWidth;
+      const desktop = width >= 1024; // Desktop is 1024px and above
+      setIsDesktop(desktop);
+      
+      // Show notice for mobile and tablet only
+      if (!desktop) {
+        setShowDeviceNotice(true);
+      }
+    };
+
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
 
   useEffect(() => {
     async function fetchCounts() {
@@ -50,6 +71,11 @@ export default function GalleryLobbyClient() {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
+      {/* ADDED: Device notice splash for mobile/tablet */}
+      {showDeviceNotice && (
+        <DeviceNoticeSplash onContinue={() => setShowDeviceNotice(false)} />
+      )}
+
       <Lobby3DBackground />
 
       <div className="relative z-10 min-h-screen flex flex-col">
